@@ -2,7 +2,14 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BookingButton } from '../../components/BookingButton';
-import MapWrapper from './MapWrapper';
+
+function MapWrapper() {
+  return (
+    <div className="w-full h-64 bg-green-900/30 rounded-xl flex items-center justify-center border border-green-500/30">
+      <p className="text-green-300 text-lg">📍 Service Areas Map</p>
+    </div>
+  );
+}
 
 export const metadata: Metadata = {
   title: 'Services',
