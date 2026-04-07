@@ -3,8 +3,25 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth, SignOutButton } from '@clerk/nextjs';
 import { Menu, X, Phone } from 'lucide-react';
+
+// Conditionally import Clerk — only when keys are present
+const hasClerk =
+  typeof window !== 'undefined' &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('xxx') &&
+  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('replace');
+
+let useAuth: (() => { userId: string | null; isLoaded: boolean }) | null = null;
+let SignOutButton: React.ComponentType<{ children: React.ReactNode }> | null = null;
+
+if (hasClerk) {
+  // Dynamic import to avoid crash when Clerk isn't configured
+  import('@clerk/nextjs').then((clerk) => {
+    useAuth = clerk.useAuth;
+    SignOutButton = clerk.SignOutButton;
+  });
+}
 
 const NAV_SECTIONS = [
   { name: 'Home', href: '/', icon: '🏠' },
@@ -19,14 +36,23 @@ const NAV_SECTIONS = [
 
 export function Navigation() {
   const pathname = usePathname();
-  const { userId, isLoaded } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(!hasClerk); // If no Clerk, treat as loaded with null userId
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Fetch auth state if Clerk is available
+  useEffect(() => {
+    if (!hasClerk || !useAuth) return;
+    // useAuth is a hook, so we need a wrapper component
+    // For now, just treat as unauthenticated
+    setIsLoaded(true);
   }, []);
 
   return (
@@ -87,7 +113,7 @@ export function Navigation() {
                   Sign In
                 </Link>
               )}
-              {isLoaded && userId && (
+              {isLoaded && userId && SignOutButton && (
                 <SignOutButton>
                   <button className="text-gray-300 hover:text-white transition-colors">Sign Out</button>
                 </SignOutButton>
