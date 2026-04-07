@@ -39,14 +39,28 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
+const hasValidClerkKey = () => {
+  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+  return key.startsWith('pk_live_') || key.startsWith('pk_test_');
+};
+
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  if (!hasValidClerkKey()) {
+    // No valid Clerk key — render without Clerk
+    return <>{children}</>;
+  }
+
+  return <ClerkProvider>{children}</ClerkProvider>;
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
+    <AuthProvider>
       <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
         <body className="bg-emerald-background text-emerald-text antialiased">
           <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </AuthProvider>
   );
 }
