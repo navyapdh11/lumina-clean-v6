@@ -1,6 +1,3 @@
 {
-  "buildCommand": "pnpm build",
-  "installCommand": "pnpm install --no-strict-peer-dependencies",
-  "framework": "nextjs",
   "regions": ["syd1"]
 }
