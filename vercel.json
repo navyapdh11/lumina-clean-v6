@@ -3,6 +3,5 @@
   "regions": ["syd1"],
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
-  "outputDirectory": ".next",
-  "nodeVersion": "22.x"
+  "outputDirectory": ".next"
 }
