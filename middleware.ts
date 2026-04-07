@@ -1,65 +1,54 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// Only import Clerk if credentials are available
-const hasClerk = !!(
-  process.env.CLERK_SECRET_KEY &&
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-);
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/residential(.*)',
+  '/commercial(.*)',
+  '/airbnb(.*)',
+  '/real-estate(.*)',
+  '/strata(.*)',
+  '/ndis(.*)',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/emerald(.*)',
+  '/book(.*)',
+  '/booking-confirmation(.*)',
+  '/api/webhooks/(.*)',
+  '/api/voice/(.*)',
+  '/api/vision/(.*)',
+  '/api/scraping/(.*)',
+  '/api/tenders/(.*)',
+  '/api/trpc/(.*)',
+]);
 
-let isPublicRoute: (req: NextRequest) => boolean = () => false;
-let isAdminRoute: (req: NextRequest) => boolean = () => false;
-let clerkHandler: ReturnType<typeof import('@clerk/nextjs/server').clerkMiddleware> | null = null;
+const isAdminRoute = createRouteMatcher(['/admin-dashboard(.*)']);
 
-if (hasClerk) {
-  const { clerkMiddleware, createRouteMatcher } = await import('@clerk/nextjs/server');
-
-  isPublicRoute = createRouteMatcher([
-    '/',
-    '/residential(.*)',
-    '/commercial(.*)',
-    '/airbnb(.*)',
-    '/real-estate(.*)',
-    '/strata(.*)',
-    '/ndis(.*)',
-    '/sign-in(.*)',
-    '/sign-up(.*)',
-    '/emerald(.*)',
-    '/api/webhooks/(.*)',
-    '/api/voice/(.*)',
-    '/api/vision/(.*)',
-    '/api/scraping/(.*)',
-    '/api/tenders/(.*)',
-  ]);
-
-  isAdminRoute = createRouteMatcher(['/admin-dashboard(.*)']);
-
-  clerkHandler = clerkMiddleware(async (auth, req) => {
-    if (isPublicRoute(req)) {
-      return;
-    }
-
-    const { userId } = await auth();
-
-    if (isAdminRoute(req) && !userId) {
-      const signInUrl = new URL('/sign-in', req.url);
-      signInUrl.searchParams.set('redirect_url', req.url);
-      return NextResponse.redirect(signInUrl);
-    }
-  });
-}
-
-export default async function middleware(req: NextRequest) {
-  // No Clerk credentials — skip auth, allow all requests through
-  if (!clerkHandler) {
-    return NextResponse.next();
+export default clerkMiddleware(async (auth, req) => {
+  if (isPublicRoute(req)) {
+    return;
   }
 
-  return clerkHandler(req as Parameters<typeof clerkHandler>[0], req as Parameters<typeof clerkHandler>[1]);
-}
+  const { userId } = await auth();
+
+  if (isAdminRoute(req) && !userId) {
+    const signInUrl = new URL('/sign-in', req.url);
+    signInUrl.searchParams.set('redirect_url', req.url);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // For non-public, non-admin routes, redirect to sign-in if not authenticated
+  if (!userId) {
+    const signInUrl = new URL('/sign-in', req.url);
+    signInUrl.searchParams.set('redirect_url', req.url);
+    return NextResponse.redirect(signInUrl);
+  }
+});
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\..*|api/webhooks|emerald).*)',
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
