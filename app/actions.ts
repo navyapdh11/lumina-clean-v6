@@ -1,25 +1,34 @@
-import 'leaflet/dist/leaflet.css';
+import { bookingSchema } from './lib/validation';
+import type { BookingInput } from './lib/validation';
+import { isSupabaseConfigured, supabase } from './lib/supabase';
 
 export type BookingState = {
   success: boolean;
   message: string;
-  errors?: Record<string, string>;
+  errors?: Partial<Record<keyof BookingInput, string>>;
 };
 
 export async function submitBooking(
   _prevState: BookingState,
   formData: FormData,
 ): Promise<BookingState> {
-  const service = String(formData.get('service') || '').trim();
-  const date = String(formData.get('date') || '').trim();
-  const time = String(formData.get('time') || '').trim();
+  const raw: BookingInput = {
+    service: String(formData.get('service') || '') as BookingInput['service'],
+    date: String(formData.get('date') || '').trim(),
+    time: String(formData.get('time') || '').trim(),
+    name: String(formData.get('name') || '').trim(),
+    phone: String(formData.get('phone') || '').trim(),
+    notes: String(formData.get('notes') || '').trim(),
+  };
 
-  const errors: Record<string, string> = {};
-  if (!service) errors.service = 'Please select a service.';
-  if (!date) errors.date = 'Please choose a date.';
-  if (!time) errors.time = 'Please choose a time.';
+  const result = bookingSchema.safeParse(raw);
 
-  if (Object.keys(errors).length > 0) {
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors;
+    const errors: BookingState['errors'] = {};
+    for (const key of Object.keys(fieldErrors) as (keyof typeof fieldErrors)[]) {
+      errors[key as keyof BookingInput] = fieldErrors[key]?.[0] ?? 'Invalid value.';
+    }
     return {
       success: false,
       message: 'Please fix the highlighted fields.',
@@ -27,7 +36,41 @@ export async function submitBooking(
     };
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  const { service, date, time, name, phone, notes } = result.data;
+
+  await new Promise<void>((resolve) => setTimeout(resolve, 600));
+
+  // Persist to Supabase
+  if (isSupabaseConfigured && supabase) {
+    const { error: dbError } = await supabase.from('bookings').insert({
+      service,
+      booking_date: date,
+      booking_time: time,
+      customer_name: name || null,
+      customer_phone: phone || null,
+      notes: notes || null,
+      status: 'pending',
+    });
+
+    if (dbError) {
+      console.error('[EmeraldClean DB Error]', dbError);
+      return {
+        success: false,
+        message: 'Something went wrong saving your booking. Please try again.',
+      };
+    }
+  } else {
+    // Dev fallback: log booking to console
+    console.log('[EmeraldClean Booking]', {
+      service,
+      date,
+      time,
+      name: name || undefined,
+      phone: phone || undefined,
+      notes: notes || undefined,
+      createdAt: new Date().toISOString(),
+    });
+  }
 
   return {
     success: true,

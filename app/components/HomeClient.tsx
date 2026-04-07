@@ -9,7 +9,6 @@ import {
   Search,
   User,
   CheckCircle,
-  X,
   Home,
   PlusCircle,
   MapPin,
@@ -271,33 +270,11 @@ export default function HomeClient() {
         </section>
       </main>
 
-      {showModal && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4"
-          onClick={() => setShowModal(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="booking-title"
-        >
-          <div
-            className="modal relative bg-emerald-surface rounded-3xl w-full max-w-lg p-8 animate-modal-pop"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowModal(false)}
-              aria-label="Close booking dialog"
-              className="absolute top-5 right-5 rounded-full p-2 hover:bg-emerald-surface-low transition-colors"
-              type="button"
-            >
-              <X className="h-5 w-5 text-emerald-text" />
-            </button>
-            <h2 id="booking-title" className="font-headline text-3xl mb-6 text-emerald-text">
-              Book Your Cleaning
-            </h2>
-            <BookingForm onSuccess={handleSuccess} />
-          </div>
-        </div>
-      )}
+      <BookingForm
+        open={showModal}
+        onOpenChange={setShowModal}
+        onSuccess={handleSuccess}
+      />
 
       {toast && (
         <div
