@@ -12,7 +12,7 @@ import { TestimonialsSection } from '@/components/testimonials-section';
 import { PricingCalculator } from '@/components/pricing-calculator';
 
 function Hero3D() {
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (meshRef.current) {

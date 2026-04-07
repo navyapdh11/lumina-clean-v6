@@ -30,6 +30,26 @@ const leadSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // SECURITY: CSRF origin check
+    const origin = request.headers.get('origin');
+    const host = request.headers.get('host');
+    if (origin && host) {
+      try {
+        const originHost = new URL(origin).host;
+        if (originHost !== host) {
+          return NextResponse.json(
+            { error: 'Invalid origin' },
+            { status: 403 }
+          );
+        }
+      } catch {
+        return NextResponse.json(
+          { error: 'Invalid origin URL' },
+          { status: 403 }
+        );
+      }
+    }
+
     const rawBody = await request.json();
 
     // Validate input with Zod

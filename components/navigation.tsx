@@ -82,7 +82,12 @@ export function Navigation() {
               </Link>
             </div>
 
-            <button className="lg:hidden text-white" onClick={() => setMobileOpen(!mobileOpen)}>
+            <button
+              className="lg:hidden text-white"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileOpen}
+            >
               {mobileOpen ? <X /> : <Menu />}
             </button>
           </div>

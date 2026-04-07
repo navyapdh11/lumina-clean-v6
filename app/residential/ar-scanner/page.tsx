@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
 
 function ARScene({ onMeasure }: { onMeasure: (data: { sqm: number; bedrooms: number; price: number }) => void }) {
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<THREE.Mesh>(null);
   const [scanning, setScanning] = useState(false);
 
   useFrame((state) => {

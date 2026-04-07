@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Calculator, ArrowRight, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { pricingEngine } from '@/lib/pricing';
 
 export function PricingCalculator() {
   const [serviceType, setServiceType] = useState<string>('residential');
@@ -10,48 +11,19 @@ export function PricingCalculator() {
   const [bedrooms, setBedrooms] = useState<string>('2');
   const [bathrooms, setBathrooms] = useState<string>('1');
   const [frequency, setFrequency] = useState<string>('once');
+  const [postcode, setPostcode] = useState<string>('');
   const [calculated, setCalculated] = useState(false);
 
-  const calculatePrice = () => {
-    let basePrice = 0;
-
-    switch (serviceType) {
-      case 'residential':
-        basePrice = 99;
-        const bedPrice = parseInt(bedrooms) * 25;
-        const bathPrice = parseInt(bathrooms) * 35;
-        basePrice += bedPrice + bathPrice;
-        break;
-      case 'commercial':
-        const area = parseInt(sqm) || 0;
-        basePrice = area * 0.65;
-        break;
-      case 'strata':
-        basePrice = 450;
-        break;
-      case 'airbnb':
-        basePrice = 149;
-        const bedCount = parseInt(bedrooms) || 1;
-        basePrice += (bedCount - 1) * 30;
-        break;
-      case 'realestate':
-        basePrice = 299;
-        break;
-      case 'ndis':
-        basePrice = 120;
-        break;
-    }
-
-    // Apply frequency discount
-    if (frequency === 'weekly') {
-      basePrice *= 0.8; // 20% discount
-    } else if (frequency === 'fortnightly') {
-      basePrice *= 0.85; // 15% discount
-    } else if (frequency === 'monthly') {
-      basePrice *= 0.9; // 10% discount
-    }
-
-    return Math.round(basePrice);
+  // Use the SHARED pricing engine — consistent with server
+  const calculatePrice = (): number => {
+    return pricingEngine.calculate({
+      serviceType,
+      postcode: postcode || '2000',
+      sqm: sqm ? parseFloat(sqm) : undefined,
+      bedrooms: bedrooms ? parseInt(bedrooms) : undefined,
+      bathrooms: bathrooms ? parseInt(bathrooms) : undefined,
+      frequency: frequency as 'once' | 'weekly' | 'fortnightly' | 'monthly',
+    });
   };
 
   const handleCalculate = () => {
@@ -59,25 +31,6 @@ export function PricingCalculator() {
   };
 
   const price = calculatePrice();
-
-  const getServiceDescription = () => {
-    switch (serviceType) {
-      case 'residential':
-        return 'Standard home cleaning (all floors vacuumed & mopped, dusting, kitchen, bathrooms)';
-      case 'commercial':
-        return `Office/commercial cleaning at $0.65/sqm`;
-      case 'strata':
-        return 'Per location strata cleaning (foyer, common areas, facilities)';
-      case 'airbnb':
-        return 'Airbnb turnover cleaning (linen change, full clean, restock)';
-      case 'realestate':
-        return 'Pre-sale presentation clean (deep clean + exterior)';
-      case 'ndis':
-        return 'NDIS home support cleaning (customized to your plan)';
-      default:
-        return '';
-    }
-  };
 
   return (
     <section className="py-24 px-6 bg-gradient-to-br from-purple-950/50 via-black to-cyan-950/50">
@@ -136,7 +89,7 @@ export function PricingCalculator() {
             </div>
 
             <div className="space-y-6">
-              {serviceType === 'residential' || serviceType === 'airbnb' ? (
+              {(serviceType === 'residential' || serviceType === 'airbnb') && (
                 <>
                   <div>
                     <label className="block text-gray-300 mb-2 font-medium">Bedrooms</label>
@@ -173,9 +126,11 @@ export function PricingCalculator() {
                     </select>
                   </div>
                 </>
-              ) : serviceType === 'commercial' ? (
+              )}
+
+              {serviceType === 'commercial' && (
                 <div>
-                  <label className="block text-gray-300 mb-2 font-medium">Area (sqm) *</label>
+                  <label className="block text-gray-300 mb-2 font-medium">Area (sqm)</label>
                   <input
                     type="number"
                     value={sqm}
@@ -187,7 +142,22 @@ export function PricingCalculator() {
                     placeholder="500"
                   />
                 </div>
-              ) : null}
+              )}
+
+              <div>
+                <label className="block text-gray-300 mb-2 font-medium">Postcode</label>
+                <input
+                  type="text"
+                  value={postcode}
+                  onChange={(e) => {
+                    setPostcode(e.target.value);
+                    setCalculated(false);
+                  }}
+                  className="w-full bg-black/40 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-cyan-500 focus:outline-none transition-colors"
+                  placeholder="2000"
+                  maxLength={4}
+                />
+              </div>
 
               <div>
                 <label className="block text-gray-300 mb-2 font-medium">Frequency</label>
@@ -238,7 +208,7 @@ export function PricingCalculator() {
                   ${price}
                   {frequency !== 'once' && <span className="text-2xl text-gray-400">/clean</span>}
                 </p>
-                <p className="text-gray-400 mb-6">{getServiceDescription()}</p>
+                <p className="text-gray-400 mb-6">{pricingEngine.getDescription(serviceType)}</p>
                 {frequency !== 'once' && (
                   <p className="text-sm text-cyan-400 mb-6">
                     {frequency === 'weekly' && 'Weekly cleaning with 20% discount applied'}

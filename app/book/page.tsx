@@ -12,8 +12,10 @@ function BookContent() {
   const searchParams = useSearchParams();
   const prefillPrice = searchParams.get('price');
 
+type ServiceType = 'residential' | 'commercial' | 'airbnb' | 'strata' | 'ndis' | 'real-estate';
+
   const [formData, setFormData] = useState({
-    serviceType: 'residential',
+    serviceType: 'residential' as ServiceType,
     postcode: '',
     address: '',
     scheduledAt: '',
@@ -85,7 +87,7 @@ function BookContent() {
             <label className="block text-sm font-medium mb-2 text-gray-300">Service Type</label>
             <select
               value={formData.serviceType}
-              onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, serviceType: e.target.value as ServiceType })}
               className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="residential" className="bg-black">Residential</option>

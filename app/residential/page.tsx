@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Navigation } from '@/components/navigation';
 import { ArrowRight, Sparkles, Clock, Shield, CheckCircle } from 'lucide-react';
 
-export default function ResidentialPage() {
+export default function ResidentialClient() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-cyan-950">
       <Navigation />

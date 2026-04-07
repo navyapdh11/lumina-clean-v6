@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Reveal } from '../components/Reveal';
 import { ToggleSwitch } from '../components/ToggleSwitch';
+import { trpc } from '@/lib/trpc/client';
 
 /** SVG sparkline — pure SVG, no library needed */
 function Sparkline({ data, color = 'rgb(16, 185, 129)', height = 48 }: {
@@ -181,30 +182,25 @@ const demoSparkConv    = [0.48, 0.50, 0.49, 0.52, 0.51, 0.54, 0.53, 0.56, 0.55, 
 export default function AdminDashboard() {
   const [freq, setFreq] = useState<Frequency>('monthly');
   const [activeTab, setActiveTab] = useState('overview');
-  const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
+  // Use real tRPC data — falls back to demo data when DB not configured
+  const { data: metrics, refetch, isLoading } = trpc.getDashboardMetrics.useQuery(undefined, {
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   useEffect(() => {
-    // Simulate fetching live tRPC data
-    // In production: const { data } = trpc.getDashboardMetrics.useQuery();
-    // For now, load the hardcoded values from the public tRPC procedure
-    const load = async () => {
-      setLoading(true);
-      await new Promise((r) => setTimeout(r, 600)); // simulate network
-      setMetrics({
-        mrr: 4_450_000,
-        totalJobs: 1_070,
-        activeLeads: 4_361,
-        conversionRate: 0.56,
-        pendingTenders: 23,
-        ndisBidsSubmitted: 12,
-      });
-      setLastRefresh(new Date());
+    if (!isLoading) {
       setLoading(false);
-    };
-    load();
-  }, []);
+    }
+  }, [isLoading]);
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    await refetch();
+    setLastRefresh(new Date());
+  };
 
   const f = freqMultipliers[freq];
   const tabs = [
@@ -241,7 +237,7 @@ export default function AdminDashboard() {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => { setLoading(true); setTimeout(() => { setMetrics({ mrr: 4_450_000, totalJobs: 1_070, activeLeads: 4_361, conversionRate: 0.56, pendingTenders: 23, ndisBidsSubmitted: 12 }); setLoading(false); setLastRefresh(new Date()); }, 800); }}
+              onClick={handleRefresh}
               className="flex items-center gap-2 text-sm text-emerald-text-muted hover:text-emerald-primary transition-colors glass rounded-xl px-3 py-2"
               type="button"
             >

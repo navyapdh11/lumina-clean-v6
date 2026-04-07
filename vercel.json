@@ -1,5 +1,8 @@
 {
   "framework": "nextjs",
   "regions": ["syd1"],
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
+  "nodeVersion": "22.x"
 }

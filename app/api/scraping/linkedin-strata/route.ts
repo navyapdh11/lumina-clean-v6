@@ -1,41 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 
-const strataScraperSchema = z.object({
-  targetStates: z.array(z.string()).default(['NSW', 'VIC', 'QLD', 'WA']),
-});
-
+/**
+ * LinkedIn Strata Lead Scraping Endpoint
+ *
+ * NOTE: This endpoint is not yet implemented.
+ * The planned implementation uses Brightdata API for LinkedIn profile scraping
+ * with proper compliance to LinkedIn ToS and Australian Privacy Act 1988.
+ *
+ * TODO: Implement real scraping with:
+ * - Brightdata API integration
+ * - Rate limiting and request throttling
+ * - Data deduplication
+ * - Lead enrichment with company data
+ * - Compliance with LinkedIn Robots.txt
+ */
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { targetStates } = strataScraperSchema.parse(body);
-
-    const searchQueries = targetStates.flatMap(state => [
-      `strata manager ${state}`,
-      `body corporate ${state}`,
-    ]);
-
-    const leads = searchQueries.flatMap((query, i) =>
-      Array.from({ length: 5 }, (_, j) => ({
-        name: `Lead ${i * 5 + j + 1}`,
-        title: 'Strata Manager',
-        company: `${query.split(' ')[0]} Corp Pty Ltd`,
-        profileUrl: `https://linkedin.com/in/lead-${i * 5 + j + 1}`,
-        location: query.split(' ')[1],
-      }))
-    );
-
-    return NextResponse.json({
-      success: true,
-      leads: leads.length,
-      imported: Math.min(leads.length, 50),
-      sample: leads.slice(0, 5),
-    });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid input', details: error.errors }, { status: 400 });
-    }
-    console.error('LinkedIn strata scraper error:', error);
-    return NextResponse.json({ error: 'Failed to scrape LinkedIn' }, { status: 500 });
-  }
+  return NextResponse.json(
+    {
+      error: 'Not Implemented',
+      message: 'LinkedIn scraping is pending implementation. This feature requires Brightdata API configuration and compliance review.',
+      status: 'pending',
+    },
+    { status: 501 }
+  );
 }
