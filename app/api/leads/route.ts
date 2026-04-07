@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { leads } from '@/db/schema';
 import { nanoid } from 'nanoid';
+import { notifyNewLead } from '@/lib/email';
 import { z } from 'zod';
 
 const leadSchema = z.object({
@@ -93,6 +94,17 @@ export async function POST(request: Request) {
       facilities: data.facilities ? JSON.stringify(data.facilities) : null,
       currentProvider: data.currentProvider ?? null,
     });
+
+    // Send email notifications (non-blocking, fire-and-forget)
+    notifyNewLead({
+      type: data.type,
+      contactName: data.contactName ?? data.participantName ?? data.strataName ?? 'Unknown',
+      email: data.email,
+      phone: data.phone ?? undefined,
+      businessName: data.businessName ?? undefined,
+      message: data.message ?? undefined,
+      ...data,
+    }).catch(err => console.error('Failed to send email notification:', err));
 
     return NextResponse.json({
       success: true,
