@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Reveal } from '../../components/Reveal';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -187,11 +188,9 @@ export default function ServicesPage() {
 
         {/* Service Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {filtered.map((service) => (
-            <div
-              key={service.id}
-              className="card-glass overflow-hidden group"
-            >
+          {filtered.map((service, i) => (
+            <Reveal key={service.id} delay={i * 80}>
+              <div className="card-glass overflow-hidden group">
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
                 <Image
@@ -238,6 +237,7 @@ export default function ServicesPage() {
                 </div>
               </div>
             </div>
+            </Reveal>
           ))}
         </div>
 
