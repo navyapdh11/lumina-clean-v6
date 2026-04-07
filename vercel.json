@@ -1,5 +1,4 @@
 {
   "framework": "nextjs",
-  "regions": ["syd1"],
-  "installCommand": "npm install"
+  "regions": ["syd1"]
 }
