@@ -1,9 +1,10 @@
 import { drizzle } from 'drizzle-orm/planetscale-serverless';
-import { Client } from '@planetscale/database';
+import { connect } from '@planetscale/database';
 import * as schema from './schema';
 
-const client = new Client({
-  url: process.env.DATABASE_URL!,
+// Initialize PlanetScale connection
+const connection = connect({
+  url: process.env.DATABASE_URL,
 });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(connection as any, { schema });
