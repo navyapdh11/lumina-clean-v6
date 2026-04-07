@@ -4,21 +4,33 @@ import { db } from '@/db';
 import { jobs } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
-  apiVersion: '2024-12-18.acacia' as any,
-});
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.warn('⚠️ STRIPE_SECRET_KEY is not set — Stripe webhook will return 503');
+}
+
+const stripeClient = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' as any })
+  : null;
 
 export async function POST(req: NextRequest) {
   try {
+    if (!stripeClient) {
+      return NextResponse.json({ error: 'Stripe not configured' }, { status: 503 });
+    }
+
     const body = await req.text();
     const sig = req.headers.get('stripe-signature');
 
     let event: Stripe.Event;
     try {
-      event = stripeClient.webhooks.constructEvent(
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+      if (!webhookSecret) {
+        return NextResponse.json({ error: 'STRIPE_WEBHOOK_SECRET not set' }, { status: 503 });
+      }
+      event = stripeClient!.webhooks.constructEvent(
         body,
         sig || '',
-        process.env.STRIPE_WEBHOOK_SECRET || 'whsec_mock'
+        webhookSecret
       );
     } catch (err) {
       return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 });

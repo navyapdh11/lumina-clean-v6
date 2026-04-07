@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Reveal } from '../../components/Reveal';
-import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle, MapPin, ChevronRight, Sparkles, ShieldCheck, Leaf } from 'lucide-react';
@@ -10,8 +9,6 @@ import { BookingButton } from '../../components/BookingButton';
 
 export default function ServicesPage() {
   const [activeFilter, setActiveFilter] = useState('all');
-
-  const filters = ['all', 'residential', 'commercial', 'specialist'];
 
   const services = [
     {

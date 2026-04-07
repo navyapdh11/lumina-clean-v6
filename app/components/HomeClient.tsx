@@ -5,8 +5,6 @@ import { Reveal } from './Reveal';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {
-  Moon,
-  Sun,
   Search,
   User,
   CheckCircle,

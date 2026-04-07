@@ -48,6 +48,11 @@ export const appRouter = router({
       price: z.number(),
       sqm: z.number().optional(),
       bedrooms: z.number().optional(),
+      bathrooms: z.number().optional(),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+      frequency: z.string().optional(),
+      notes: z.string().optional(),
       metadata: z.record(z.any()).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -58,21 +63,31 @@ export const appRouter = router({
         userId: ctx.userId,
         serviceType: input.serviceType,
         postcode: input.postcode,
-        address: input.address,
         scheduledAt: input.scheduledAt,
+        address: input.address,
         price: input.price.toString(),
-        sqm: input.sqm?.toString(),
-        bedrooms: input.bedrooms,
-        metadata: input.metadata || {},
+        sqm: input.sqm ?? null,
+        bedrooms: input.bedrooms ?? 0,
+        bathrooms: input.bathrooms ?? 0,
+        phone: input.phone ?? null,
+        email: input.email ?? null,
+        frequency: input.frequency ?? null,
+        notes: input.notes ?? null,
+        metadata: input.metadata ? JSON.stringify(input.metadata) : null,
       });
 
-      await kafka.produce('cleaning-dispatch', {
-        jobId,
-        serviceType: input.serviceType,
-        postcode: input.postcode,
-        eta: input.scheduledAt,
-        priority: 'normal',
-      });
+      try {
+        await kafka.produce('cleaning-dispatch', {
+          jobId,
+          serviceType: input.serviceType,
+          postcode: input.postcode,
+          eta: input.scheduledAt,
+          priority: 'normal',
+        });
+      } catch (e) {
+        // Kafka may not be configured — log but don't fail the job
+        console.error('Kafka dispatch failed (non-fatal):', e);
+      }
 
       return { jobId, success: true };
     }),
@@ -88,11 +103,14 @@ export const appRouter = router({
     .mutation(async ({ input }) => {
       const leadsToInsert = input.map(lead => ({
         id: `LEAD-${nanoid(8)}`,
-        source: 'linkedin-strata',
-        name: lead.name || lead.title || 'Unknown',
-        company: lead.company,
-        profileUrl: lead.profileUrl,
-        serviceType: 'strata',
+        source: 'linkedin-strata' as const,
+        type: 'strata-lead' as const,
+        contactName: lead.name || lead.title || 'Unknown',
+        email: `${nanoid(6)}@lead.imported`,
+        name: lead.name || lead.title || null,
+        company: lead.company || null,
+        profileUrl: lead.profileUrl || null,
+        serviceType: 'strata' as const,
       }));
 
       await db.insert(leads).values(leadsToInsert);

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
+import { TRPCReactProvider } from '@/lib/trpc/react';
+import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/app/components/ThemeProvider';
-import { ClerkProviderFallback } from '@/app/ClerkProviderFallback';
 import '@/app/globals.css';
 
 const inter = Inter({
@@ -41,9 +42,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
       <body className="bg-emerald-background text-emerald-text antialiased">
-        <ClerkProviderFallback>
+        <TRPCReactProvider>
           <ThemeProvider>{children}</ThemeProvider>
-        </ClerkProviderFallback>
+          <Toaster />
+        </TRPCReactProvider>
       </body>
     </html>
   );

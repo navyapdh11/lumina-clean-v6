@@ -6,8 +6,7 @@ export const jobs = mysqlTable('jobs', {
   serviceType: varchar('service_type', { length: 50 }).notNull(), // residential, commercial, ndis, strata, airbnb, real-estate
   status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, confirmed, in-progress, completed, cancelled
   postcode: varchar('postcode', { length: 10 }).notNull(),
-  date: varchar('date', { length: 20 }).notNull(),
-  time: varchar('time', { length: 20 }).notNull(),
+  scheduledAt: varchar('scheduled_at', { length: 50 }).notNull(),
   address: text('address').notNull(),
   phone: varchar('phone', { length: 30 }),
   email: varchar('email', { length: 255 }),
@@ -19,6 +18,7 @@ export const jobs = mysqlTable('jobs', {
   stripePaymentLink: text('stripe_payment_link'),
   stripePaymentId: varchar('stripe_payment_id', { length: 255 }),
   notes: text('notes'),
+  metadata: text('metadata'), // JSON string
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -45,6 +45,12 @@ export const leads = mysqlTable('leads', {
   levels: int('levels'),
   facilities: text('facilities'), // JSON array
   currentProvider: varchar('current_provider', { length: 255 }),
+  // LinkedIn scraping fields
+  name: varchar('name', { length: 255 }),
+  company: varchar('company', { length: 255 }),
+  profileUrl: text('profile_url'),
+  serviceType: varchar('service_type', { length: 30 }),
+  // Lead management
   status: varchar('status', { length: 20 }).default('new'), // new, contacted, qualified, converted, lost
   source: varchar('source', { length: 50 }).default('website'), // website, linkedin, referral, google
   createdAt: timestamp('created_at').defaultNow().notNull(),
