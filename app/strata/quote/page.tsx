@@ -20,9 +20,50 @@ export default function StrataQuotePage() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Site audit request submitted! Our strata specialist will contact you within 24 hours to arrange a free on-site inspection.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'strata-audit',
+          ...formData,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({
+          strataName: '',
+          contactName: '',
+          role: '',
+          email: '',
+          phone: '',
+          lotCount: '',
+          floors: '',
+          facilities: [],
+          frequency: '',
+          currentProvider: '',
+          message: '',
+        });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const facilityOptions = ['Foyer/Entrance', 'Elevator/Lift', 'Gym', 'Pool', 'Sauna/Spa', 'BBQ/Entertainment Area', 'Car Park', 'Garden/Pathways', 'Rubbish Room', 'Rooftop/Terrace', 'Storage Cage', 'Fire Stairs'];
@@ -162,8 +203,25 @@ export default function StrataQuotePage() {
               <p className="text-gray-300 text-sm">After the site audit, we&apos;ll provide a comprehensive proposal for your committee review. We can also present at your next AGM if required.</p>
             </div>
 
-            <button type="submit" className="w-full bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 rounded-xl text-lg font-bold hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
-              Request Free Site Audit <ArrowRight className="w-5 h-5" />
+            {submitStatus === 'success' && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center mb-4">
+                <p className="text-green-400 font-medium">✅ Site audit request submitted successfully!</p>
+                <p className="text-gray-400 text-sm mt-1">Our strata specialist will contact you within 24 hours.</p>
+              </div>
+            )}
+            {submitStatus === 'error' && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center mb-4">
+                <p className="text-red-400 font-medium">❌ Submission failed</p>
+                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-LUMINA</p>
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 rounded-xl text-lg font-bold hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {isSubmitting ? 'Submitting...' : <>Request Free Site Audit <ArrowRight className="w-5 h-5" /></>}
             </button>
 
             <div className="flex items-center justify-center gap-6 text-gray-400 text-sm">

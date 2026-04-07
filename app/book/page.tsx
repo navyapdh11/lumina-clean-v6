@@ -51,6 +51,26 @@ function BookContent() {
         price: quote,
         metadata: { notes: formData.notes },
       });
+      
+      // Store job details in localStorage for confirmation page
+      localStorage.setItem(`job_${result.jobId}`, JSON.stringify({
+        id: result.jobId,
+        serviceType: formData.serviceType,
+        status: 'pending',
+        postcode: formData.postcode,
+        date: formData.scheduledAt,
+        time: formData.scheduledAt.split('T')[1] || 'TBD',
+        address: formData.address,
+        phone: '',
+        email: '',
+        bedrooms: 0,
+        bathrooms: 0,
+        sqm: 0,
+        frequency: 'one-time',
+        price: quote.toString(),
+        createdAt: new Date().toISOString(),
+      }));
+      
       router.push(`/booking-confirmation/${result.jobId}`);
     } catch (error) {
       console.error('Booking error:', error);

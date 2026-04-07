@@ -18,9 +18,52 @@ export default function NDISAssessmentPage() {
     additionalNotes: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Assessment request submitted! Our NDIS coordinator will contact you within 48 hours.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'ndis-assessment',
+          ...formData,
+          participantName: formData.participantName,
+          ndisNumber: formData.ndisNumber,
+          livingSituation: formData.livingSituation,
+          services: formData.servicesNeeded,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({
+          participantName: '',
+          ndisNumber: '',
+          email: '',
+          phone: '',
+          planType: '',
+          livingSituation: '',
+          servicesNeeded: [],
+          frequency: '',
+          additionalNotes: '',
+        });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const serviceOptions = [
@@ -165,8 +208,25 @@ export default function NDISAssessmentPage() {
               <p>Our NDIS coordinator will contact you to arrange a free in-home or virtual assessment. All staff are NDIS Worker Screened and vaccinated.</p>
             </div>
 
-            <button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-4 rounded-xl text-lg font-bold hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
-              Request Free Assessment <ArrowRight className="w-5 h-5" />
+            {submitStatus === 'success' && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center mb-4">
+                <p className="text-green-400 font-medium">✅ Assessment request submitted successfully!</p>
+                <p className="text-gray-400 text-sm mt-1">Our NDIS coordinator will contact you within 48 hours.</p>
+              </div>
+            )}
+            {submitStatus === 'error' && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center mb-4">
+                <p className="text-red-400 font-medium">❌ Submission failed</p>
+                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-LUMINA</p>
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-4 rounded-xl text-lg font-bold hover:scale-[1.02] transition-transform flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              {isSubmitting ? 'Submitting...' : <>Request Free Assessment <ArrowRight className="w-5 h-5" /></>}
             </button>
 
             <div className="text-center text-gray-400 text-sm">

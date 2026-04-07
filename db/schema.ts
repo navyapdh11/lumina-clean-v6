@@ -1,83 +1,71 @@
-import { mysqlTable, varchar, int, decimal, datetime, json, text, index } from 'drizzle-orm/mysql-core';
-import { sql } from 'drizzle-orm';
-
-export const users = mysqlTable('users', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  clerkId: varchar('clerk_id', { length: 255 }).unique().notNull(),
-  email: varchar('email', { length: 255 }).notNull(),
-  name: varchar('name', { length: 255 }),
-  phone: varchar('phone', { length: 20 }),
-  role: varchar('role', { length: 20 }).default('customer').notNull(),
-  createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).$onUpdateFn(() => sql`NOW()`),
-}, (table) => [
-  index('idx_clerk_id').on(table.clerkId),
-  index('idx_email').on(table.email),
-]);
+import { mysqlTable, varchar, int, decimal, text, timestamp, boolean } from 'drizzle-orm/mysql-core';
 
 export const jobs = mysqlTable('jobs', {
   id: varchar('id', { length: 255 }).primaryKey(),
-  userId: varchar('user_id', { length: 255 }).notNull(),
-  serviceType: varchar('service_type', { length: 50 }).notNull(),
+  userId: varchar('user_id', { length: 255 }),
+  serviceType: varchar('service_type', { length: 50 }).notNull(), // residential, commercial, ndis, strata, airbnb, real-estate
+  status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, confirmed, in-progress, completed, cancelled
   postcode: varchar('postcode', { length: 10 }).notNull(),
+  date: varchar('date', { length: 20 }).notNull(),
+  time: varchar('time', { length: 20 }).notNull(),
   address: text('address').notNull(),
-  sqm: decimal('sqm', { precision: 10, scale: 2 }),
-  bedrooms: int('bedrooms'),
+  phone: varchar('phone', { length: 30 }),
+  email: varchar('email', { length: 255 }),
+  bedrooms: int('bedrooms').default(0),
+  bathrooms: int('bathrooms').default(0),
+  sqm: int('sqm'),
+  frequency: varchar('frequency', { length: 20 }), // one-time, weekly, fortnightly, monthly
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
-  status: varchar('status', { length: 20 }).default('pending').notNull(),
-  scheduledAt: datetime('scheduled_at', { mode: 'string' }),
-  completedAt: datetime('completed_at', { mode: 'string' }),
+  stripePaymentLink: text('stripe_payment_link'),
   stripePaymentId: varchar('stripe_payment_id', { length: 255 }),
-  metadata: json('metadata'),
-  createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).$onUpdateFn(() => sql`NOW()`),
-}, (table) => [
-  index('idx_user_id').on(table.userId),
-  index('idx_status').on(table.status),
-  index('idx_postcode').on(table.postcode),
-  index('idx_scheduled_at').on(table.scheduledAt),
-]);
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 
 export const leads = mysqlTable('leads', {
   id: varchar('id', { length: 255 }).primaryKey(),
-  source: varchar('source', { length: 50 }).notNull(),
-  name: varchar('name', { length: 255 }),
-  email: varchar('email', { length: 255 }),
-  phone: varchar('phone', { length: 20 }),
-  company: varchar('company', { length: 255 }),
-  profileUrl: varchar('profile_url', { length: 512 }),
-  serviceType: varchar('service_type', { length: 50 }),
-  status: varchar('status', { length: 20 }).default('new').notNull(),
-  metadata: json('metadata'),
-  createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-}, (table) => [
-  index('idx_source').on(table.source),
-  index('idx_status').on(table.status),
-  index('idx_service_type').on(table.serviceType),
-]);
+  type: varchar('type', { length: 30 }).notNull(), // commercial-quote, ndis-assessment, strata-audit, general
+  businessName: varchar('business_name', { length: 255 }),
+  contactName: varchar('contact_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 30 }),
+  propertyType: varchar('property_type', { length: 50 }),
+  sqm: int('sqm'),
+  floors: int('floors'),
+  frequency: varchar('frequency', { length: 20 }),
+  services: text('services'), // JSON array of selected services
+  message: text('message'),
+  ndisNumber: varchar('ndis_number', { length: 50 }),
+  planType: varchar('plan_type', { length: 30 }), // self-managed, plan-managed, ndia-managed
+  livingSituation: varchar('living_situation', { length: 50 }),
+  strataName: varchar('strata_name', { length: 255 }),
+  role: varchar('role', { length: 50 }), // strata-manager, committee-member, executive
+  lotCount: int('lot_count'),
+  levels: int('levels'),
+  facilities: text('facilities'), // JSON array
+  currentProvider: varchar('current_provider', { length: 255 }),
+  status: varchar('status', { length: 20 }).default('new'), // new, contacted, qualified, converted, lost
+  source: varchar('source', { length: 50 }).default('website'), // website, linkedin, referral, google
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 
-export const tenders = mysqlTable('tenders', {
+export const testimonials = mysqlTable('testimonials', {
   id: varchar('id', { length: 255 }).primaryKey(),
-  source: varchar('source', { length: 100 }).notNull(),
-  title: text('title').notNull(),
-  value: decimal('value', { precision: 12, scale: 2 }),
-  deadline: datetime('deadline', { mode: 'string' }),
-  status: varchar('status', { length: 20 }).default('pending').notNull(),
-  bidSubmitted: int('bid_submitted').default(0),
-  bidValue: decimal('bid_value', { precision: 12, scale: 2 }),
-  confidence: decimal('confidence', { precision: 5, scale: 4 }),
-  metadata: json('metadata'),
-  createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-}, (table) => [
-  index('idx_source').on(table.source),
-  index('idx_status').on(table.status),
-]);
+  authorName: varchar('author_name', { length: 100 }).notNull(),
+  location: varchar('location', { length: 100 }).notNull(),
+  rating: int('rating').notNull().default(5),
+  serviceType: varchar('service_type', { length: 30 }).notNull(),
+  text: text('text').notNull(),
+  verified: boolean('verified').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Job = typeof jobs.$inferSelect;
-export type NewJob = typeof jobs.$inferInsert;
-export type Lead = typeof leads.$inferSelect;
-export type NewLead = typeof leads.$inferInsert;
-export type Tender = typeof tenders.$inferSelect;
-export type NewTender = typeof tenders.$inferInsert;
+export const metrics = mysqlTable('metrics', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  type: varchar('type', { length: 30 }).notNull(), // mrr, leads, conversion, tenders
+  value: decimal('value', { precision: 15, scale: 2 }).notNull(),
+  period: varchar('period', { length: 20 }).notNull(), // daily, weekly, monthly
+  recordedAt: timestamp('recorded_at').defaultNow().notNull(),
+});
