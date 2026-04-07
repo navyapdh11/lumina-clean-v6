@@ -5,24 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone } from 'lucide-react';
 
-// Conditionally import Clerk — only when keys are present
-const hasClerk =
-  typeof window !== 'undefined' &&
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('xxx') &&
-  !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.includes('replace');
-
-let useAuth: (() => { userId: string | null; isLoaded: boolean }) | null = null;
-let SignOutButton: React.ComponentType<{ children: React.ReactNode }> | null = null;
-
-if (hasClerk) {
-  // Dynamic import to avoid crash when Clerk isn't configured
-  import('@clerk/nextjs').then((clerk) => {
-    useAuth = clerk.useAuth;
-    SignOutButton = clerk.SignOutButton;
-  });
-}
-
 const NAV_SECTIONS = [
   { name: 'Home', href: '/', icon: '🏠' },
   { name: 'Residential', href: '/residential', icon: '🏡' },
@@ -31,28 +13,18 @@ const NAV_SECTIONS = [
   { name: 'Real Estate', href: '/real-estate', icon: '🏘️' },
   { name: 'Strata', href: '/strata', icon: '🏗️' },
   { name: 'NDIS', href: '/ndis', icon: '♿' },
-  { name: 'Admin', href: '/admin-dashboard', icon: '⚙️', protected: true },
+  { name: 'Admin', href: '/admin-dashboard', icon: '⚙️' },
 ];
 
 export function Navigation() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState(!hasClerk); // If no Clerk, treat as loaded with null userId
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Fetch auth state if Clerk is available
-  useEffect(() => {
-    if (!hasClerk || !useAuth) return;
-    // useAuth is a hook, so we need a wrapper component
-    // For now, just treat as unauthenticated
-    setIsLoaded(true);
   }, []);
 
   return (
@@ -74,30 +46,27 @@ export function Navigation() {
             </Link>
 
             <div className="hidden lg:flex items-center gap-2">
-              {NAV_SECTIONS.map((section) => {
-                if (section.protected && !userId) return null;
-                return (
-                  <Link
-                    key={section.href}
-                    href={section.href}
-                    className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                      pathname === section.href
-                        ? 'bg-white/10 text-cyan-400'
-                        : 'text-gray-300 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <span className="mr-2">{section.icon}</span>
-                    {section.name}
-                    {pathname === section.href && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl -z-10"
-                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </Link>
-                );
-              })}
+              {NAV_SECTIONS.map((section) => (
+                <Link
+                  key={section.href}
+                  href={section.href}
+                  className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    pathname === section.href
+                      ? 'bg-white/10 text-cyan-400'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span className="mr-2">{section.icon}</span>
+                  {section.name}
+                  {pathname === section.href && (
+                    <motion.div
+                      layoutId="nav-indicator"
+                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl -z-10"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </Link>
+              ))}
             </div>
 
             <div className="hidden lg:flex items-center gap-4">
@@ -108,16 +77,9 @@ export function Navigation() {
                 <Phone className="w-4 h-4" />
                 1300-LUMINA
               </a>
-              {isLoaded && !userId && (
-                <Link href="/sign-in" className="text-gray-300 hover:text-white transition-colors">
-                  Sign In
-                </Link>
-              )}
-              {isLoaded && userId && SignOutButton && (
-                <SignOutButton>
-                  <button className="text-gray-300 hover:text-white transition-colors">Sign Out</button>
-                </SignOutButton>
-              )}
+              <Link href="/sign-in" className="text-gray-300 hover:text-white transition-colors">
+                Sign In
+              </Link>
             </div>
 
             <button className="lg:hidden text-white" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -136,21 +98,18 @@ export function Navigation() {
             className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl lg:hidden pt-20"
           >
             <div className="flex flex-col gap-4 px-6">
-              {NAV_SECTIONS.map((section) => {
-                if (section.protected && !userId) return null;
-                return (
-                  <Link
-                    key={section.href}
-                    href={section.href}
-                    className={`text-xl py-4 border-b border-white/10 ${
-                      pathname === section.href ? 'text-cyan-400' : 'text-gray-300'
-                    }`}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {section.icon} {section.name}
-                  </Link>
-                );
-              })}
+              {NAV_SECTIONS.map((section) => (
+                <Link
+                  key={section.href}
+                  href={section.href}
+                  className={`text-xl py-4 border-b border-white/10 ${
+                    pathname === section.href ? 'text-cyan-400' : 'text-gray-300'
+                  }`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {section.icon} {section.name}
+                </Link>
+              ))}
               <a href="tel:1300586462" className="text-xl py-4 text-cyan-400 border-b border-white/10">
                 📞 1300-LUMINA
               </a>

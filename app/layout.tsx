@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { ThemeProvider } from '@/app/components/ThemeProvider';
+import { ClerkProviderFallback } from '@/app/ClerkProviderFallback';
 import '@/app/globals.css';
 
 const inter = Inter({
@@ -16,22 +17,22 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: 'EmeraldClean – Premium Precision Cleaning for Australia',
+  title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
   description:
-    'Eco-conscious premium cleaning services across Australia. Residential, commercial, specialist and hazardous cleaning with verified professionals.',
-  keywords: ['cleaning services', 'end of lease', 'commercial cleaning', 'NDIS', 'Australia'],
+    'Australia\'s most advanced AI-powered cleaning services platform. Residential, commercial, NDIS, strata, Airbnb, and real estate cleaning with intelligent pricing and instant booking.',
+  keywords: ['cleaning services', 'AI cleaning', 'commercial cleaning', 'NDIS', 'Airbnb cleaning', 'real estate cleaning', 'strata cleaning', 'Australia'],
   openGraph: {
-    title: 'EmeraldClean – Premium Precision Cleaning for Australia',
-    description: 'Eco-conscious premium cleaning services across Australia.',
-    url: 'https://emeraldclean.com.au',
-    siteName: 'EmeraldClean',
+    title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
+    description: 'AI-powered premium cleaning services across Australia with intelligent pricing and instant booking.',
+    url: 'https://lumina-clean.com.au',
+    siteName: 'LuminaClean',
     type: 'website',
     locale: 'en_AU',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EmeraldClean – Premium Precision Cleaning for Australia',
-    description: 'Eco-conscious premium cleaning services across Australia.',
+    title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
+    description: 'AI-powered premium cleaning services across Australia.',
   },
   robots: { index: true, follow: true },
 };
@@ -40,7 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
       <body className="bg-emerald-background text-emerald-text antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ClerkProviderFallback>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProviderFallback>
       </body>
     </html>
   );
