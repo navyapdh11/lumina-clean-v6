@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
-import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@/app/components/ThemeProvider';
 import '@/app/globals.css';
 
@@ -37,30 +36,12 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const dynamic = 'force-dynamic';
-
-const hasValidClerkKey = () => {
-  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
-  return key.startsWith('pk_live_') || key.startsWith('pk_test_');
-};
-
-function AuthProvider({ children }: { children: React.ReactNode }) {
-  if (!hasValidClerkKey()) {
-    // No valid Clerk key — render without Clerk
-    return <>{children}</>;
-  }
-
-  return <ClerkProvider>{children}</ClerkProvider>;
-}
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
-        <body className="bg-emerald-background text-emerald-text antialiased">
-          <ThemeProvider>{children}</ThemeProvider>
-        </body>
-      </html>
-    </AuthProvider>
+    <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
+      <body className="bg-emerald-background text-emerald-text antialiased">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
+    </html>
   );
 }
