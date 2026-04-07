@@ -1,96 +1,160 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
+import { CheckCircle, MinusCircle, Sparkles, ShieldCheck, Leaf, Clock, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { BookingButton } from '../../components/BookingButton';
+import { ToggleSwitch } from '../../components/ToggleSwitch';
 
-export const metadata: Metadata = {
-  title: 'Pricing',
-  description:
-    'Transparent, competitive pricing for all EmeraldClean services. No hidden fees. Book online in 60 seconds.',
-};
-
-const pricingTiers = [
+const faqs = [
   {
-    id: 'standard',
-    name: 'Standard',
-    price: 'From $99',
-    priceNote: 'Per visit',
-    description: 'Ideal for regular home cleaning. Weekly or fortnightly.',
-    features: [
-      'Up to 3 bedrooms',
-      'Kitchen and bathroom clean',
-      'Floor vacuum and mop',
-      'Surface dusting',
-      'Linen change',
-      '1 cleaner',
-    ],
-    notIncluded: ['Deep oven clean', 'Carpet steam cleaning', 'Window interiors'],
-    cta: 'Book Standard Clean',
-    highlight: false,
+    q: 'What if I\'m not satisfied with the clean?',
+    a: 'We offer a 100% satisfaction guarantee. If you\'re not happy, we return and re-clean at no extra charge.',
   },
   {
-    id: 'deep',
-    name: 'Deep Clean',
-    price: 'From $199',
-    priceNote: 'Per visit',
-    description: 'Perfect for seasonal refreshes, moving days, or one-off intensive cleans.',
-    features: [
-      'Unlimited bedrooms',
-      'Full kitchen deep clean',
-      'All bathrooms sanitised',
-      'Inside oven and fridge',
-      'Skirting boards and doors',
-      '2 cleaners',
-    ],
-    notIncluded: ['Carpet steam cleaning', 'Window interiors'],
-    cta: 'Book Deep Clean',
-    highlight: true,
+    q: 'Are your products eco-certified?',
+    a: 'Yes. All our standard products are independently certified eco-friendly, non-toxic, and safe for children and pets.',
   },
   {
-    id: 'specialist',
-    name: 'Specialist',
-    price: 'Custom Quote',
-    priceNote: 'Per project',
-    description: 'For mould remediation, hazardous bio clean, commercial, or restoration work.',
-    features: [
-      'Fully customised scope',
-      'Certified technicians',
-      'Specialist equipment',
-      'Compliance documentation',
-      'OHS and EPA compliant',
-      'Dedicated account manager',
-    ],
-    notIncluded: ['Standard cleaning tasks'],
-    cta: 'Request a Quote',
-    highlight: false,
+    q: 'Do I need to provide equipment?',
+    a: 'No. Our professionals bring all equipment, supplies, and eco-certified cleaning products.',
+  },
+  {
+    q: 'How do I change or cancel a booking?',
+    a: 'You can change or cancel up to 24 hours before your scheduled clean through your account dashboard or by calling us.',
+  },
+  {
+    q: 'Are your cleaners background-checked?',
+    a: 'Every EmeraldClean professional is verified, insured, and has passed a national police check. We vet all cleaners before they can accept jobs.',
+  },
+  {
+    q: 'Do you offer same-day bookings?',
+    a: 'Yes, in metro areas we often have same-day availability. Book before 12pm for the best chance of same-day service.',
   },
 ];
 
-const addOns = [
-  { name: 'Carpet Steam Cleaning', price: '+$149', desc: 'Hot-water extraction for up to 3 rooms' },
-  { name: 'Window Interiors', price: '+$89', desc: 'All accessible interior windows' },
-  { name: 'Inside Fridge/Oven', price: '+$69', desc: 'Degreasing of one appliance' },
-  { name: 'Laundry Clean', price: '+$49', desc: 'Full laundry including dryer vent' },
-  { name: 'Garage Sweep', price: '+$59', desc: 'Pressure wash and sweep of garage floor' },
-  { name: 'Extra Hour (add-on)', price: '+$45/hr', desc: 'Add 1 hour of cleaning time' },
-];
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-emerald-outline/10 last:border-0">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+        aria-expanded={open}
+      >
+        <span className="font-semibold text-emerald-text text-sm group-hover:text-emerald-primary transition-colors">
+          {q}
+        </span>
+        {open ? (
+          <ChevronUp className="h-4 w-4 text-emerald-primary shrink-0" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-emerald-text-muted shrink-0 group-hover:text-emerald-primary transition-colors" />
+        )}
+      </button>
+      {open && (
+        <p className="pb-5 text-emerald-text-muted text-sm leading-relaxed">
+          {a}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function PricingPage() {
+  const [annual, setAnnual] = useState(false);
+
+  // Prices: monthly → annual (annual = 20% off, shown as monthly equivalent)
+  const pricingTiers = [
+    {
+      id: 'standard',
+      name: 'Standard',
+      monthlyPrice: 99,
+      description: 'Ideal for regular home cleaning. Weekly or fortnightly.',
+      features: [
+        'Up to 3 bedrooms',
+        'Kitchen and bathroom clean',
+        'Floor vacuum and mop',
+        'Surface dusting',
+        'Linen change',
+        '1 cleaner',
+      ],
+      notIncluded: ['Deep oven clean', 'Carpet steam cleaning', 'Window interiors'],
+      cta: 'Book Standard Clean',
+      highlight: false,
+      badge: null,
+    },
+    {
+      id: 'deep',
+      name: 'Deep Clean',
+      monthlyPrice: 199,
+      description: 'Perfect for seasonal refreshes, moving days, or one-off intensive cleans.',
+      features: [
+        'Unlimited bedrooms',
+        'Full kitchen deep clean',
+        'All bathrooms sanitised',
+        'Inside oven and fridge',
+        'Skirting boards and doors',
+        '2 cleaners',
+      ],
+      notIncluded: ['Carpet steam cleaning', 'Window interiors'],
+      cta: 'Book Deep Clean',
+      highlight: true,
+      badge: 'Most Popular',
+    },
+    {
+      id: 'specialist',
+      name: 'Specialist',
+      monthlyPrice: null,
+      description: 'For mould remediation, hazardous bio clean, commercial, or restoration work.',
+      features: [
+        'Fully customised scope',
+        'Certified technicians',
+        'Specialist equipment',
+        'Compliance documentation',
+        'OHS and EPA compliant',
+        'Dedicated account manager',
+      ],
+      notIncluded: ['Standard cleaning tasks'],
+      cta: 'Request a Quote',
+      highlight: false,
+      badge: null,
+    },
+  ];
+
+  const addOns = [
+    { name: 'Carpet Steam Cleaning', price: annual ? '$119' : '$149', desc: 'Hot-water extraction for up to 3 rooms' },
+    { name: 'Window Interiors', price: annual ? '$71' : '$89', desc: 'All accessible interior windows' },
+    { name: 'Inside Fridge/Oven', price: annual ? '$55' : '$69', desc: 'Degreasing of one appliance' },
+    { name: 'Laundry Clean', price: annual ? '$39' : '$49', desc: 'Full laundry including dryer vent' },
+    { name: 'Garage Sweep', price: annual ? '$47' : '$59', desc: 'Pressure wash and sweep of garage floor' },
+    { name: 'Extra Hour', price: annual ? '$36' : '$45', desc: 'Add 1 hour of cleaning time' },
+  ];
+
   return (
     <div className="min-h-screen bg-emerald-background">
+      {/* Ambient blobs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10" aria-hidden="true">
+        <div className="blob blob-slow absolute top-0 right-1/4 w-[600px] h-[600px] bg-emerald-200/10 dark:bg-emerald-900/20" />
+        <div className="blob blob-fast absolute bottom-0 left-0 w-80 h-80 bg-teal-200/10 dark:bg-teal-900/15" />
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-emerald-background/90 backdrop-blur border-b border-emerald-outline/20">
+      <header className="sticky top-0 z-50 glass border-b border-emerald-outline/20">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-6 md:px-8 py-4">
-          <Link
-            href="/emerald"
-            className="text-2xl font-extrabold text-emerald-primary font-headline tracking-tight"
-          >
-            EmeraldClean
+          <Link href="/emerald" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl btn-gradient flex items-center justify-center shadow-md">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-xl font-extrabold gradient-text font-headline tracking-tight">
+              EmeraldClean
+            </span>
           </Link>
           <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
-            <Link href="/emerald/services" className="text-emerald-text-muted hover:text-emerald-secondary transition-colors">
+            <Link href="/emerald/services" className="text-emerald-text-muted hover:text-emerald-primary font-medium transition-colors">
               Services
             </Link>
-            <Link href="/emerald/pricing" className="text-emerald-primary font-bold hover:underline">
+            <Link href="/emerald/pricing" className="text-emerald-primary font-bold">
               Pricing
             </Link>
           </nav>
@@ -98,136 +162,184 @@ export default function PricingPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 md:px-8 py-12">
+
+        {/* Hero */}
         <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 text-sm font-bold text-emerald-primary mb-4 uppercase tracking-widest">
+            <Star className="h-4 w-4" /> Pricing
+          </div>
           <h1 className="font-headline font-extrabold text-4xl md:text-5xl tracking-tight text-emerald-text">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-emerald-text-muted text-lg mt-4 max-w-xl mx-auto">
+          <p className="text-emerald-text-muted text-lg mt-4 max-w-xl mx-auto leading-relaxed">
             No hidden fees. No call-out charges. Book online in 60 seconds and lock in your price before the cleaner arrives.
           </p>
-          <div className="flex items-center justify-center gap-6 mt-6 text-sm text-emerald-text-muted">
-            <span className="flex items-center gap-2">
-              <span className="text-emerald-secondary">✓</span> Free re-clean guarantee
+
+          {/* Billing toggle */}
+          <div className="inline-flex items-center gap-4 mt-8 glass rounded-full px-6 py-2.5">
+            <span className={`text-sm font-semibold transition-colors ${!annual ? 'text-emerald-primary' : 'text-emerald-text-muted'}`}>
+              Weekly / One-off
             </span>
-            <span className="flex items-center gap-2">
-              <span className="text-emerald-secondary">✓</span> No lock-in contracts
+            <ToggleSwitch
+              checked={annual}
+              onChange={setAnnual}
+              label="Annual billing"
+              size="sm"
+            />
+            <div className={`flex items-center gap-1.5 transition-colors ${annual ? 'text-emerald-primary' : 'text-emerald-text-muted'}`}>
+              <span className="text-sm font-semibold">Annual</span>
+              {annual && (
+                <span className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-2 py-0.5 rounded-full">
+                  Save 20%
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Trust row */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-emerald-text-muted">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-emerald-primary" /> Free re-clean guarantee
             </span>
-            <span className="flex items-center gap-2">
-              <span className="text-emerald-secondary">✓</span> Cancel anytime
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> No lock-in contracts
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4 text-emerald-primary" /> Cancel anytime
             </span>
           </div>
         </div>
 
         {/* Pricing Tiers */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
           {pricingTiers.map((tier) => (
             <div
               key={tier.id}
-              className={`rounded-3xl p-8 flex flex-col ${
-                tier.highlight
-                  ? 'bg-emerald-surface border-2 border-emerald-primary shadow-xl'
-                  : 'bg-emerald-surface-low border border-emerald-outline/10'
-              }`}
+              className={`card-glass p-8 flex flex-col relative overflow-hidden ${tier.highlight ? 'ring-2 ring-emerald-primary/30' : ''}`}
             >
+              {/* Background accent */}
               {tier.highlight && (
-                <span className="bg-emerald-primary text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 uppercase tracking-wider">
-                  Most Popular
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-emerald-400/10 to-transparent rounded-bl-[100px]" />
+              )}
+
+              {tier.badge && (
+                <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-bold px-4 py-1 rounded-b-full shadow-lg">
+                  {tier.badge}
                 </span>
               )}
-              <h2 className="font-headline font-bold text-2xl text-emerald-text">{tier.name}</h2>
-              <div className="mt-2">
-                <span className="text-3xl font-extrabold text-emerald-primary">{tier.price}</span>
-                <span className="text-emerald-text-muted text-sm ml-2">{tier.priceNote}</span>
-              </div>
-              <p className="text-emerald-text-muted text-sm mt-3">{tier.description}</p>
 
+              <div className="pt-2">
+                <h2 className="font-headline font-bold text-2xl text-emerald-text">{tier.name}</h2>
+                <div className="mt-3 flex items-baseline gap-2">
+                  {tier.monthlyPrice ? (
+                    <>
+                      <span className="text-4xl font-extrabold gradient-text">
+                        ${annual ? Math.round(tier.monthlyPrice * 0.8) : tier.monthlyPrice}
+                      </span>
+                      <span className="text-emerald-text-muted text-sm">
+                        /{annual ? 'mo (billed annually)' : 'visit'}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-extrabold gradient-text">Custom</span>
+                      <span className="text-emerald-text-muted text-sm">/project</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-emerald-text-muted text-sm mt-2">{tier.description}</p>
+              </div>
+
+              {/* Features */}
               <ul className="mt-6 space-y-3 flex-1">
                 {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-emerald-text">
-                    <span className="text-emerald-secondary mt-0.5 shrink-0">✓</span>
+                  <li key={feature} className="flex items-start gap-2.5 text-sm text-emerald-text">
+                    <CheckCircle className="h-4 w-4 text-emerald-primary shrink-0 mt-0.5" />
                     {feature}
                   </li>
                 ))}
-              </ul>
-
-              <ul className="mt-4 space-y-1">
                 {tier.notIncluded.map((excluded) => (
-                  <li key={excluded} className="flex items-start gap-2 text-sm text-emerald-text-muted">
-                    <span className="text-emerald-text-muted mt-0.5 shrink-0">—</span>
+                  <li key={excluded} className="flex items-start gap-2.5 text-sm text-emerald-text-muted/60">
+                    <MinusCircle className="h-4 w-4 shrink-0 mt-0.5" />
                     {excluded}
                   </li>
                 ))}
               </ul>
 
-              <BookingButton
-                label={tier.cta}
-                className={`mt-8 ${
-                  tier.highlight
-                    ? ''
-                    : 'bg-emerald-surface border border-emerald-primary text-emerald-primary hover:bg-emerald-surface-low transition-colors'
-                }`}
-              />
+              <div className="mt-8">
+                <BookingButton
+                  label={tier.cta}
+                  className={`w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                    tier.highlight
+                      ? 'btn-gradient text-white shadow-lg'
+                      : 'glass border border-emerald-outline/30 text-emerald-primary hover:border-emerald-primary'
+                  }`}
+                />
+              </div>
             </div>
           ))}
         </div>
 
         {/* Add-ons */}
         <section className="mb-16">
-          <h2 className="font-headline font-bold text-2xl text-emerald-text mb-8">Optional Add-Ons</h2>
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="font-headline font-bold text-2xl text-emerald-text">Optional Add-Ons</h2>
+            <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
+              Save 20% with annual
+            </span>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {addOns.map((addon) => (
               <div
                 key={addon.name}
-                className="bg-emerald-surface rounded-2xl p-5 border border-emerald-outline/10 flex items-center justify-between"
+                className="glass rounded-2xl p-5 flex items-center justify-between gap-4 hover-lift"
               >
                 <div>
-                  <h3 className="font-semibold text-emerald-text">{addon.name}</h3>
-                  <p className="text-emerald-text-muted text-sm mt-1">{addon.desc}</p>
+                  <h3 className="font-semibold text-emerald-text text-sm">{addon.name}</h3>
+                  <p className="text-emerald-text-muted text-xs mt-1">{addon.desc}</p>
                 </div>
-                <span className="text-emerald-primary font-extrabold shrink-0 ml-4">{addon.price}</span>
+                <span className="text-emerald-primary font-extrabold text-lg shrink-0">
+                  {addon.price}
+                </span>
               </div>
             ))}
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="bg-emerald-surface-low rounded-3xl p-8 md:p-12">
-          <h2 className="font-headline font-bold text-2xl text-emerald-text mb-8">Frequently Asked Questions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              {
-                q: 'What if I\'m not satisfied with the clean?',
-                a: 'We offer a 100% satisfaction guarantee. If you\'re not happy, we return and re-clean at no extra charge.',
-              },
-              {
-                q: 'Are your products eco-certified?',
-                a: 'Yes. All our standard products are independently certified eco-friendly, non-toxic, and safe for children and pets.',
-              },
-              {
-                q: 'Do I need to provide equipment?',
-                a: 'No. Our professionals bring all equipment, supplies, and eco-certified cleaning products.',
-              },
-              {
-                q: 'How do I change or cancel a booking?',
-                a: 'You can change or cancel up to 24 hours before your scheduled clean through your account dashboard or by calling us.',
-              },
-            ].map(({ q, a }) => (
-              <div key={q} className="bg-emerald-surface rounded-2xl p-6 border border-emerald-outline/10">
-                <h3 className="font-bold text-emerald-text">{q}</h3>
-                <p className="text-emerald-text-muted text-sm mt-2">{a}</p>
-              </div>
+        <section className="glass rounded-3xl p-8 md:p-12">
+          <div className="flex items-center gap-3 mb-8">
+            <h2 className="font-headline font-bold text-2xl text-emerald-text">Frequently Asked Questions</h2>
+          </div>
+          <div className="max-w-2xl">
+            {faqs.map((faq) => (
+              <FaqItem key={faq.q} q={faq.q} a={faq.a} />
             ))}
+          </div>
+
+          {/* Still have questions CTA */}
+          <div className="mt-10 pt-8 border-t border-emerald-outline/10 flex flex-col sm:flex-row items-center gap-4">
+            <p className="text-emerald-text-muted text-sm flex-1">
+              Still have questions? Our team is here to help.
+            </p>
+            <a
+              href="tel:+61180012345"
+              className="btn-gradient text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center gap-2"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
+              Call 1800 CLEAN
+            </a>
           </div>
         </section>
       </main>
 
-      <footer className="bg-emerald-surface-low border-t py-8 px-6 md:px-8 text-sm text-emerald-text-muted mt-12">
+      <footer className="glass border-t border-emerald-outline/20 py-8 px-6 md:px-8 text-sm text-emerald-text-muted mt-12">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-4">
           <span>© 2026 EmeraldClean Pty Ltd.</span>
           <nav aria-label="Footer navigation">
             <ul className="flex gap-6">
-              <li><Link href="/emerald" className="hover:text-emerald-primary">Home</Link></li>
-              <li><Link href="/emerald/services" className="hover:text-emerald-primary">Services</Link></li>
+              <li><Link href="/emerald" className="hover:text-emerald-primary transition-colors">Home</Link></li>
+              <li><Link href="/emerald/services" className="hover:text-emerald-primary transition-colors">Services</Link></li>
             </ul>
           </nav>
         </div>
