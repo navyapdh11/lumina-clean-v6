@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 
 export default function Map() {
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -12,6 +13,9 @@ export default function Map() {
     const map = L.map(mapRef.current, {
       zoomControl: true,
     }).setView([-25.2744, 133.7751], 4);
+
+    // Mark as loaded after tiles start rendering
+    map.whenReady(() => setLoaded(true));
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
@@ -40,10 +44,22 @@ export default function Map() {
   }, []);
 
   return (
-    <div
-      ref={mapRef}
-      className="h-full w-full"
-      aria-label="Service coverage map"
-    />
+    <div className="relative h-full w-full">
+      {/* Loading skeleton — shown while Leaflet initializes */}
+      {!loaded && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-emerald-surface-low">
+          <div className="w-10 h-10 rounded-full border-4 border-emerald-primary/20 border-t-emerald-primary animate-spin mb-3" />
+          <p className="text-emerald-text-muted text-xs">Loading map…</p>
+          {/* Skeleton shimmer over map area */}
+          <div className="absolute inset-0 skeleton opacity-40" />
+        </div>
+      )}
+      <div
+        ref={mapRef}
+        className="h-full w-full"
+        aria-label="Service coverage map"
+        style={{ opacity: loaded ? 1 : 0 }}
+      />
+    </div>
   );
 }

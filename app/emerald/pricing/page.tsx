@@ -33,8 +33,9 @@ const faqs = [
   },
 ];
 
-function FaqItem({ q, a }: { q: string; a: string }) {
+function FaqItem({ q, a, index }: { q: string; a: string; index: number }) {
   const [open, setOpen] = useState(false);
+  const answerId = `faq-answer-${index}`;
   return (
     <div className="border-b border-emerald-outline/10 last:border-0">
       <button
@@ -42,6 +43,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between gap-4 py-5 text-left group"
         aria-expanded={open}
+        aria-controls={answerId}
       >
         <span className="font-semibold text-emerald-text text-sm group-hover:text-emerald-primary transition-colors">
           {q}
@@ -52,11 +54,12 @@ function FaqItem({ q, a }: { q: string; a: string }) {
           <ChevronDown className="h-4 w-4 text-emerald-text-muted shrink-0 group-hover:text-emerald-primary transition-colors" />
         )}
       </button>
-      {open && (
-        <p className="pb-5 text-emerald-text-muted text-sm leading-relaxed">
-          {a}
-        </p>
-      )}
+      <p
+        id={answerId}
+        className={`pb-5 text-emerald-text-muted text-sm leading-relaxed transition-all ${open ? 'max-h-96' : 'max-h-0 overflow-hidden'}`}
+      >
+        {a}
+      </p>
     </div>
   );
 }
@@ -312,8 +315,8 @@ export default function PricingPage() {
             <h2 className="font-headline font-bold text-2xl text-emerald-text">Frequently Asked Questions</h2>
           </div>
           <div className="max-w-2xl">
-            {faqs.map((faq) => (
-              <FaqItem key={faq.q} q={faq.q} a={faq.a} />
+            {faqs.map((faq, i) => (
+              <FaqItem key={faq.q} q={faq.q} a={faq.a} index={i} />
             ))}
           </div>
 
