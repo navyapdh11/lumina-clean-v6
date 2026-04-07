@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
             currency: 'aud',
             product_data: { name: `${service} cleaning` },
             unit_amount: price * 100,
-          },
+          } as any,
           quantity: 1,
         },
       ],
-    });
+    } as any);
 
     const jobId = `JOB-${Date.now()}`;
     await kafka.produce('cleaning-dispatch', { jobId, postcode, service, eta: slot, priority: 'normal' });

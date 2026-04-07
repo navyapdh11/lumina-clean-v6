@@ -9,7 +9,7 @@ const handler = async (req: NextRequest) => {
     endpoint: '/api/trpc',
     req,
     router: appRouter,
-    createContext: () => ({ userId: authObj.userId }),
+    createContext: () => ({ userId: authObj.userId || undefined }),
   });
 };
 

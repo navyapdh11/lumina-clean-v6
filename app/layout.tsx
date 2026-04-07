@@ -1,41 +1,48 @@
 import type { Metadata } from 'next';
+import { Inter, Manrope } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
-import { TRPCReactProvider } from '@/lib/trpc/react';
-import { Toaster } from '@/components/ui/toaster';
-import './globals.css';
+import { ThemeProvider } from '@/app/components/ThemeProvider';
+import '@/app/globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'LuminaClean | AI-Powered Cleaning Services Australia',
-  description: "Australia's #1 AI-powered cleaning platform. Residential, Commercial, NDIS, Strata. Call 1300-LUMINA.",
-  keywords: ['cleaning services', 'NDIS', 'strata', 'commercial cleaning', 'Sydney', 'Melbourne', 'Brisbane'],
+  title: 'EmeraldClean – Premium Precision Cleaning for Australia',
+  description:
+    'Eco-conscious premium cleaning services across Australia. Residential, commercial, specialist and hazardous cleaning with verified professionals.',
+  keywords: ['cleaning services', 'end of lease', 'commercial cleaning', 'NDIS', 'Australia'],
   openGraph: {
-    title: 'LuminaClean',
-    description: 'AI-Powered Cleaning Empire',
-    url: 'https://lumina-clean.com.au',
-    siteName: 'LuminaClean',
-    locale: 'en_AU',
+    title: 'EmeraldClean – Premium Precision Cleaning for Australia',
+    description: 'Eco-conscious premium cleaning services across Australia.',
+    url: 'https://emeraldclean.com.au',
+    siteName: 'EmeraldClean',
     type: 'website',
+    locale: 'en_AU',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EmeraldClean – Premium Precision Cleaning for Australia',
+    description: 'Eco-conscious premium cleaning services across Australia.',
   },
   robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider
-      appearance={{
-        variables: {
-          colorPrimary: '#06b6d4',
-          colorBackground: '#000000',
-          colorText: '#ffffff',
-        },
-      }}
-    >
-      <html lang="en-AU" suppressHydrationWarning>
-        <body className="bg-black text-white antialiased overflow-x-hidden">
-          <TRPCReactProvider>
-            {children}
-            <Toaster />
-          </TRPCReactProvider>
+    <ClerkProvider>
+      <html lang="en-AU" suppressHydrationWarning className={`${inter.variable} ${manrope.variable}`}>
+        <body className="bg-emerald-background text-emerald-text antialiased">
+          <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

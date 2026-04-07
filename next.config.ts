@@ -1,10 +1,14 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: '/root/lumina-clean-v6',
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.clerk.com' },
       { protocol: 'https', hostname: '*.clerk.accounts.dev' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
   },
   compiler: {

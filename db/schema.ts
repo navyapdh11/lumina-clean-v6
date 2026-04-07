@@ -9,7 +9,7 @@ export const users = mysqlTable('users', {
   phone: varchar('phone', { length: 20 }),
   role: varchar('role', { length: 20 }).default('customer').notNull(),
   createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).onUpdateNow(),
+  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).$onUpdateFn(() => sql`NOW()`),
 }, (table) => [
   index('idx_clerk_id').on(table.clerkId),
   index('idx_email').on(table.email),
@@ -30,7 +30,7 @@ export const jobs = mysqlTable('jobs', {
   stripePaymentId: varchar('stripe_payment_id', { length: 255 }),
   metadata: json('metadata'),
   createdAt: datetime('created_at', { mode: 'string' }).default(sql`NOW()`).notNull(),
-  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).onUpdateNow(),
+  updatedAt: datetime('updated_at', { mode: 'string' }).default(sql`NOW()`).$onUpdateFn(() => sql`NOW()`),
 }, (table) => [
   index('idx_user_id').on(table.userId),
   index('idx_status').on(table.status),

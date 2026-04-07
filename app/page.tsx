@@ -7,7 +7,9 @@ import { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Navigation } from '@/components/navigation';
-import { ArrowRight, Sparkles, Shield, Clock, Phone } from 'lucide-react';
+import { ArrowRight, Sparkles, Shield, Clock, Phone, Headphones, Zap, Award } from 'lucide-react';
+import { TestimonialsSection } from '@/components/testimonials-section';
+import { PricingCalculator } from '@/components/pricing-calculator';
 
 function Hero3D() {
   const meshRef = useRef<THREE.Mesh>(null!);
@@ -138,6 +140,84 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-24 px-6 bg-black/30 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto">
+          <motion.h2
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-5xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent mb-16"
+          >
+            Why Choose LuminaClean?
+          </motion.h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { icon: Zap, title: 'AI-Powered', desc: 'Smart pricing, optimized routing, and predictive quality control', color: 'text-yellow-400' },
+              { icon: Shield, title: 'Fully Insured', desc: '$20M public liability and worker\'s compensation coverage', color: 'text-green-400' },
+              { icon: Headphones, title: '24/7 Support', desc: 'Round-the-clock customer service via phone, chat, or email', color: 'text-cyan-400' },
+              { icon: Award, title: 'Satisfaction Guarantee', desc: '100% happiness guarantee or we\'ll re-clean for free', color: 'text-purple-400' },
+            ].map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 text-center"
+              >
+                <feature.icon className={`w-16 h-16 ${feature.color} mx-auto mb-4`} />
+                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-400">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Calculator */}
+      <PricingCalculator />
+
+      {/* Testimonials */}
+      <TestimonialsSection />
+
+      {/* Final CTA */}
+      <section className="py-24 px-6 bg-gradient-to-r from-purple-950 via-black to-cyan-950">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.h2
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-5xl md:text-6xl font-black bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent mb-8"
+          >
+            Ready for a Cleaner Experience?
+          </motion.h2>
+          <motion.p
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl text-gray-300 mb-12"
+          >
+            Join thousands of happy customers across Australia
+          </motion.p>
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-col md:flex-row gap-6 justify-center"
+          >
+            <Link href="/book" className="bg-gradient-to-r from-green-500 to-emerald-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
+              📅 Book Your Clean Now <ArrowRight className="w-6 h-6" />
+            </Link>
+            <a href="tel:1300586462" className="bg-gradient-to-r from-purple-500 to-pink-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
+              📞 Call 1300-LUMINA <Phone className="w-6 h-6" />
+            </a>
+          </motion.div>
         </div>
       </section>
     </motion.div>
