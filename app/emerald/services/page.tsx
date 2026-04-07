@@ -1,11 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Reveal } from '../../components/Reveal';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { CheckCircle, MapPin, ChevronRight, Sparkles, ShieldCheck, Leaf } from 'lucide-react';
 import { BookingButton } from '../../components/BookingButton';
+
+const Map = dynamic(() => import('../../components/Map'), { ssr: false });
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'EmeraldClean Services – Residential, Commercial & Specialist Cleaning',
+    description:
+      "Explore EmeraldClean's full range of professional cleaning services: end-of-lease, standard home, carpet steam, office, mould remediation, and hazardous bio clean.",
+  };
+}
 
 export default function ServicesPage() {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -268,13 +280,9 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <div className="lg:col-span-7 h-80 rounded-2xl overflow-hidden border border-emerald-outline/10 glass flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-10 w-10 text-emerald-primary/40 mx-auto mb-3" />
-                <p className="text-emerald-text-muted">Australia Coverage Map</p>
-                <p className="text-emerald-text-muted/60 text-xs mt-1">8 cities · 400+ suburbs</p>
-              </div>
+            {/* Live coverage map */}
+            <div className="lg:col-span-7 h-80 rounded-2xl overflow-hidden border border-emerald-outline/10 shadow-md">
+              <Map />
             </div>
           </div>
         </section>

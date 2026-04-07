@@ -11,7 +11,6 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('theme');
@@ -19,7 +18,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const initialDark = saved === 'dark' || (!saved && prefersDark);
     setIsDark(initialDark);
     document.documentElement.classList.toggle('dark', initialDark);
-    setMounted(true);
   }, []);
 
   const toggle = () => {

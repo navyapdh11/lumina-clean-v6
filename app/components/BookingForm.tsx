@@ -52,20 +52,24 @@ function SubmitButton() {
   );
 }
 
-export function BookingFormInner({ onSuccess }: { onSuccess: (message: string) => void }) {
-  const [state, formAction] = useActionState(submitBooking, initialState);
+export function BookingFormInner({
+  onSuccess,
+  state: externalState,
+  formAction: externalFormAction,
+}: {
+  onSuccess: (message: string) => void;
+  state?: BookingState;
+  formAction?: (payload: FormData) => void;
+}) {
+  const [state, formAction] = externalState && externalFormAction
+    ? [externalState, externalFormAction]
+    : useActionState(submitBooking, initialState);
   const serviceId = useId();
   const dateId = useId();
   const timeId = useId();
   const nameId = useId();
   const phoneId = useId();
   const notesId = useId();
-
-  useEffect(() => {
-    if (state.success) {
-      onSuccess(state.message);
-    }
-  }, [state, onSuccess]);
 
   return (
     <form action={formAction} className="space-y-5" noValidate>
@@ -251,7 +255,7 @@ export default function BookingForm({
   }, [state, onSuccess, onOpenChange]);
 
   if (trigger === undefined && open === undefined) {
-    return <BookingFormInner onSuccess={onSuccess} />;
+    return <BookingFormInner onSuccess={onSuccess} state={state} formAction={formAction} />;
   }
 
   return (
@@ -289,7 +293,7 @@ export default function BookingForm({
                 </Dialog.Close>
               </div>
 
-              <BookingFormInner onSuccess={onSuccess} />
+              <BookingFormInner onSuccess={onSuccess} state={state} formAction={formAction} />
             </div>
           </div>
         </Dialog.Content>

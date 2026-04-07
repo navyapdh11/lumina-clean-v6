@@ -266,14 +266,14 @@ export default function HomeClient() {
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {/* Hero card — spans 2 columns/rows */}
-            <Reveal delay={100} className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-3xl min-h-[440px] card-glass">
+          <div className={`grid gap-5 ${compactView ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6' : 'grid-cols-1 md:grid-cols-3 lg:grid-cols-4'}`}>
+            {/* Hero card — spans 2 columns/rows (or full width in compact mode) */}
+            <Reveal delay={100} className={`group relative overflow-hidden rounded-3xl card-glass ${compactView ? 'col-span-2 min-h-[160px]' : 'md:col-span-2 md:row-span-2 min-h-[440px]'}`}>
               <Image
                 src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80"
                 alt="Bright modern living room cleaned to perfection"
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                className={`object-cover group-hover:scale-105 transition-transform duration-700 ${compactView ? 'object-left' : ''}`}
                 priority
               />
               {/* Gradient overlay */}
@@ -283,11 +283,13 @@ export default function HomeClient() {
                 Most Popular
               </span>
               <div className="absolute bottom-0 left-0 right-0 p-8">
-                <h3 className="text-white font-headline text-3xl font-bold">Residential Cleaning</h3>
-                <p className="text-white/90 mt-2 text-sm">Homes, apartments, end-of-lease & move-in</p>
+                <h3 className={`text-white font-headline font-bold ${compactView ? 'text-base' : 'text-3xl'}`}>Residential Cleaning</h3>
+                {!compactView && (
+                  <p className="text-white/90 mt-2 text-sm">Homes, apartments, end-of-lease & move-in</p>
+                )}
                 <button
                   onClick={() => setShowModal(true)}
-                  className="mt-4 inline-flex items-center gap-2 bg-white/20 backdrop-blur text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-white/30 transition-all"
+                  className={`mt-4 inline-flex items-center gap-2 bg-white/20 backdrop-blur text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-white/30 transition-all ${compactView ? 'py-2 px-4 mt-2' : ''}`}
                   type="button"
                 >
                   Book Now <ChevronRight className="h-4 w-4" />
@@ -302,14 +304,16 @@ export default function HomeClient() {
               { title: 'Specialist', desc: 'Post-renovation, events', color: 'from-amber-500/80 to-orange-600/80' },
               { title: 'Hazardous Bio', desc: 'Trauma, crime, mould', color: 'from-red-500/80 to-rose-600/80' },
             ].map((cat, i) => (
-              <Reveal key={cat.title} delay={(i + 2) * 80} className="relative overflow-hidden rounded-3xl min-h-[200px] group cursor-pointer">
+              <Reveal key={cat.title} delay={(i + 2) * 80} className={`relative overflow-hidden rounded-3xl group cursor-pointer ${compactView ? 'min-h-[120px]' : 'min-h-[200px]'}`}>
                 {/* Color gradient bg */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${cat.color}`} />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h4 className="text-white font-headline text-xl font-bold">{cat.title}</h4>
-                  <p className="text-white/80 text-sm mt-1">{cat.desc}</p>
-                  <ChevronRight className="h-4 w-4 text-white/60 mt-3 group-hover:translate-x-1 transition-transform" />
+                  <h4 className={`text-white font-headline font-bold ${compactView ? 'text-sm' : 'text-xl'}`}>{cat.title}</h4>
+                  {!compactView && <p className="text-white/80 text-sm mt-1">{cat.desc}</p>}
+                  <div className={`mt-3 group-hover:translate-x-1 transition-transform ${compactView ? 'hidden' : ''}`}>
+                    <ChevronRight className="h-4 w-4 text-white/60" />
+                  </div>
                 </div>
               </Reveal>
             ))}
