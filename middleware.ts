@@ -11,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   '/ndis(.*)',
   '/sign-in(.*)',
   '/sign-up(.*)',
+  '/emerald(.*)',
   '/api/webhooks/(.*)',
   '/api/voice/(.*)',
   '/api/vision/(.*)',
@@ -21,6 +22,10 @@ const isPublicRoute = createRouteMatcher([
 const isAdminRoute = createRouteMatcher(['/admin-dashboard(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
+  if (isPublicRoute(req)) {
+    return;
+  }
+
   const { userId } = await auth();
 
   if (isAdminRoute(req) && !userId) {
@@ -32,6 +37,6 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\..*|api/webhooks).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\..*|api/webhooks|emerald).*)',
   ],
 };

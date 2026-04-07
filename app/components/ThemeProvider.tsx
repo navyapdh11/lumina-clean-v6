@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={value}>
-      {mounted ? children : null}
+      {children}
     </ThemeContext.Provider>
   );
 }

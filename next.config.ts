@@ -2,7 +2,9 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: '/root/lumina-clean-v6',
+    resolveAlias: {
+      '@clerk/nextjs': '@clerk/nextjs',
+    },
   },
   images: {
     remotePatterns: [
