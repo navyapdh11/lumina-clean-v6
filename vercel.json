@@ -1,6 +1,5 @@
 {
   "framework": "nextjs",
   "regions": ["syd1"],
-  "buildCommand": "pnpm build",
-  "outputDirectory": ".next"
+  "installCommand": "pnpm install --no-frozen-lockfile"
 }
