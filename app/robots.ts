@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin-dashboard', '/api/', '/sign-in', '/sign-up'],
     },
-    sitemap: 'https://perth-clean-v6.vercel.app/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_APP_URL || 'https://perthclean.com.au'}/sitemap.xml`,
   };
 }

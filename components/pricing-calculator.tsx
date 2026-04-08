@@ -66,7 +66,7 @@ export function PricingCalculator() {
                   { value: 'commercial', label: '🏢 Commercial' },
                   { value: 'strata', label: '🏗️ Strata' },
                   { value: 'airbnb', label: '🔑 Airbnb' },
-                  { value: 'realestate', label: '🏘️ Real Estate' },
+                  { value: 'real-estate', label: '🏘️ Real Estate' },
                   { value: 'ndis', label: '♿ NDIS' },
                 ].map((service) => (
                   <button

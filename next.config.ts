@@ -3,8 +3,6 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   // SECURITY: Remove X-Powered-By header
   poweredByHeader: false,
-  // PERFORMANCE: Set root for file tracing to avoid multiple lockfile warnings
-  outputFileTracingRoot: '/root/perth-clean-v6',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.clerk.com' },
@@ -14,6 +12,9 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@react-three/fiber', '@react-three/drei'],
   },
   compiler: {
     // Keep error logs in production for debugging
@@ -37,7 +38,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com",
+              "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.clerk.com https://images.unsplash.com https://*.unsplash.com",
               "font-src 'self' https://fonts.gstatic.com",

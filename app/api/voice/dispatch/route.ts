@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       ],
       after_completion: {
         type: 'redirect',
-        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://lumina-clean-v6.vercel.app'}/booking-confirmation/voice`,
+        redirect_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://perth-clean-v6.vercel.app'}/booking-confirmation/voice`,
       },
     } as any);
 

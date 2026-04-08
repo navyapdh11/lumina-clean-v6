@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://perth-clean-v6.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://perthclean.com.au';
 
   return [
     {

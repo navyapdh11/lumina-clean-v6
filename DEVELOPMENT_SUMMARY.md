@@ -1,4 +1,4 @@
-# LuminaClean v6.1.2 - Development Summary
+# PerthClean v6.1.2 - Development Summary
 
 ## ✅ Completed Tasks
 
@@ -9,7 +9,7 @@
 
 ### 2. Fixed Untracked Files & Branding
 - ✅ Integrated `ClerkProviderFallback.tsx` into layout
-- ✅ Fixed branding inconsistency (EmeraldClean → LuminaClean in metadata)
+- ✅ Fixed branding inconsistency (EmeraldClean → PerthClean in metadata)
 - ✅ Updated site metadata for SEO optimization
 
 ### 3. Form Submissions (CRITICAL FIX)
@@ -111,7 +111,7 @@ These are intentionally mocked for the MVP/prototype phase:
 - **Booking confirmation shows details** (was: just job ID)
 - **Type safety maintained** (all TypeScript errors fixed)
 - **API endpoint for lead management** (new: `/api/leads`)
-- **Branding consistency** (LuminaClean throughout)
+- **Branding consistency** (PerthClean throughout)
 
 ## 📝 Files Modified in This Session
 

@@ -1,4 +1,4 @@
-# Deployment Checklist for LuminaClean v6.1
+# Deployment Checklist for PerthClean v6.1
 
 ## ✅ Completed
 - [x] All TypeScript errors fixed
@@ -35,7 +35,7 @@ Replace all placeholder values in Vercel environment settings:
 ### 2. External Services Setup
 - [ ] **Clerk**: Create application at https://dashboard.clerk.com
   - Enable email/password authentication
-  - Configure redirect URLs: `https://lumina-clean.com.au/*`
+  - Configure redirect URLs: `https://perth-clean.com.au/*`
   
 - [ ] **PlanetScale**: Create database
   - Run schema migrations: `pnpm db:push`
@@ -58,7 +58,7 @@ Replace all placeholder values in Vercel environment settings:
   - Create `cleaning-dispatch` topic
 
 ### 3. Domain Configuration
-- [ ] Purchase domain: `lumina-clean.com.au`
+- [ ] Purchase domain: `perth-clean.com.au`
 - [ ] Add domain to Vercel project settings
 - [ ] Configure DNS records (Vercel will provide values)
 - [ ] Enable HTTPS (automatic with Vercel)
@@ -89,7 +89,7 @@ Replace all placeholder values in Vercel environment settings:
 
 ```bash
 # Option 1: Using Vercel CLI
-cd /root/lumina-clean-v6
+cd /root/perth-clean-v6
 vercel --prod
 
 # Option 2: Using pnpm script

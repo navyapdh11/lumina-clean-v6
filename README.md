@@ -1,4 +1,4 @@
-# LuminaClean v6.1 - Enterprise AI Cleaning Platform
+# PerthClean v6.1 - Enterprise AI Cleaning Platform
 
 Australia's most advanced AI-powered cleaning services platform built with Next.js 15, React 19, and TypeScript.
 
@@ -103,7 +103,7 @@ pnpm deploy
 ### Project Structure
 
 ```
-lumina-clean-v6/
+perth-clean-v6/
 ├── app/                        # Next.js App Router
 │   ├── page.tsx               # Homepage (enhanced with calculator & testimonials)
 │   ├── layout.tsx             # Root layout (Clerk + tRPC)
@@ -263,10 +263,10 @@ This is an enterprise project. All changes should:
 
 ## 📄 License
 
-Proprietary - LuminaClean v6.1
+Proprietary - PerthClean v6.1
 
 ---
 
 **Built with ❤️ in Australia** 🇦🇺
 
-📞 1300-LUMINA | 🌐 https://lumina-clean.com.au
+📞 1300-PERTHCLEAN | 🌐 https://perth-clean.com.au

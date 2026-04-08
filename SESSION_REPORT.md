@@ -1,4 +1,4 @@
-# LuminaClean v6.1.3 - Final Session Report
+# PerthClean v6.1.3 - Final Session Report
 **Date**: 2026-04-08  
 **Session**: Continuation of website project development
 
@@ -91,7 +91,7 @@
 ### Critical (Before Production Deploy)
 1. **Free Disk Space**: Server at 99% capacity
    ```bash
-   cd /root/lumina-clean-v6
+   cd /root/perth-clean-v6
    rm -rf .next
    df -h  # Should show <90% usage
    pnpm build
@@ -160,7 +160,7 @@ page.tsx (server component with metadata)
 ### Immediate (After Disk Cleanup)
 ```bash
 # 1. Free disk space
-cd /root/lumina-clean-v6
+cd /root/perth-clean-v6
 rm -rf .next
 df -h  # Verify <90%
 
@@ -175,7 +175,7 @@ vercel --prod
 ```
 
 ### Post-Deployment
-- [ ] Configure domain (lumina-clean.com.au)
+- [ ] Configure domain (perth-clean.com.au)
 - [ ] Set up SSL certificates (automatic with Vercel)
 - [ ] Configure environment variables in Vercel dashboard
 - [ ] Run database migrations

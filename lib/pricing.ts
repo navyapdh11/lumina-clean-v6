@@ -15,7 +15,6 @@ const BASE_PRICES = {
   commercial: { base: 150, perBedroom: 0, perBathroom: 0, perSqm: 0.65 },
   airbnb: { base: 120, perBedroom: 25, perBathroom: 0, perSqm: 0 },
   'real-estate': { base: 180, perBedroom: 20, perBathroom: 0, perSqm: 0 },
-  realestate: { base: 180, perBedroom: 20, perBathroom: 0, perSqm: 0 },
   strata: { base: 450, perBedroom: 0, perBathroom: 0, perSqm: 0 },
   ndis: { base: 135, perBedroom: 0, perBathroom: 0, perSqm: 0 },
 };
@@ -70,7 +69,6 @@ export const pricingEngine = {
       commercial: 'Office/commercial cleaning at $0.65/sqm',
       airbnb: 'Airbnb turnover cleaning (linen change, full clean, restock)',
       'real-estate': 'Pre-sale presentation clean (deep clean + exterior)',
-      realestate: 'Pre-sale presentation clean (deep clean + exterior)',
       strata: 'Per location strata cleaning (foyer, common areas, facilities)',
       ndis: 'NDIS home support cleaning (customized to your plan)',
     };
