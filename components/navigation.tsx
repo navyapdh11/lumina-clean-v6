@@ -13,6 +13,7 @@ const NAV_SECTIONS = [
   { name: 'Real Estate', href: '/real-estate', icon: '🏘️' },
   { name: 'Strata', href: '/strata', icon: '🏗️' },
   { name: 'NDIS', href: '/ndis', icon: '♿' },
+  { name: 'Gallery', href: '/photo-gallery', icon: '📸' },
   { name: 'Admin', href: '/admin-dashboard', icon: '⚙️' },
 ];
 

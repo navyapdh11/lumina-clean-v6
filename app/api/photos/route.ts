@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { photos } from '@/db/schema';
 import { nanoid } from 'nanoid';
+import { eq } from 'drizzle-orm';
 
 export const config = {
   api: {
@@ -110,7 +111,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Photo ID required' }, { status: 400 });
     }
 
-    await db.delete(photos).where(photos.id.eq(photoId));
+    await db.delete(photos).where(eq(photos.id, photoId));
 
     return NextResponse.json({ success: true, message: 'Photo deleted successfully' });
   } catch (error) {
