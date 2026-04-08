@@ -75,3 +75,22 @@ export const metrics = mysqlTable('metrics', {
   period: varchar('period', { length: 20 }).notNull(), // daily, weekly, monthly
   recordedAt: timestamp('recorded_at').defaultNow().notNull(),
 });
+
+export const photos = mysqlTable('photos', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  jobId: varchar('job_id', { length: 255 }), // Optional: link to a job
+  leadId: varchar('lead_id', { length: 255 }), // Optional: link to a lead
+  url: varchar('url', { length: 500 }).notNull(),
+  thumbnailUrl: varchar('thumbnail_url', { length: 500 }),
+  title: varchar('title', { length: 255 }),
+  altText: text('alt_text'),
+  mimeType: varchar('mime_type', { length: 50 }),
+  size: int('size'), // bytes
+  width: int('width'),
+  height: int('height'),
+  sortOrder: int('sort_order').default(0),
+  status: varchar('status', { length: 20 }).default('ready'), // processing, ready, failed
+  uploadedBy: varchar('uploaded_by', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
