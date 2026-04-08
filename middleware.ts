@@ -4,8 +4,11 @@ import type { NextRequest } from 'next/server';
 const hasClerkKeys = !!(
   process.env.CLERK_SECRET_KEY &&
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  process.env.CLERK_SECRET_KEY.length > 20 &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.length > 20 &&
   !process.env.CLERK_SECRET_KEY.includes('_xxx') &&
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.startsWith('pk_')
+  !process.env.CLERK_SECRET_KEY.includes('changeme') &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.startsWith('pk_live_')
 );
 
 export default async function middleware(req: NextRequest) {
