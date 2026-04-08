@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Loader2, ImageOff, ZoomIn, AlertCircle } from 'lucide-react';
+import { Trash2, Loader2, ImageOff, ZoomIn, AlertCircle, X, Calendar, FileImage } from 'lucide-react';
 
 interface Photo {
   id: string;
@@ -55,24 +55,16 @@ function LazyImage({ src, alt, thumbnailUrl, className, onClick }: {
     return () => observer.disconnect();
   }, []);
 
-  const handleLoad = () => {
-    setIsLoaded(true);
-  };
-
-  const handleError = () => {
-    setHasError(true);
-  };
-
   return (
     <div ref={imgRef} className={className} onClick={onClick}>
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-900/20">
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
           <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
         </div>
       )}
 
       {hasError && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/40 text-gray-400">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-red-900/20 to-orange-900/20 text-gray-400">
           <ImageOff className="w-12 h-12 mb-2" />
           <span className="text-xs">Failed to load</span>
         </div>
@@ -82,9 +74,9 @@ function LazyImage({ src, alt, thumbnailUrl, className, onClick }: {
         <img
           src={thumbnailUrl || src}
           alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={handleLoad}
-          onError={handleError}
+          className={`w-full h-full object-cover transition-all duration-500 ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
           loading="lazy"
         />
       )}
@@ -116,11 +108,25 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-AU', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="aspect-square bg-white/5 rounded-xl animate-pulse" />
+          <motion.div 
+            key={i} 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: i * 0.05 }}
+            className="aspect-square bg-gradient-to-br from-white/5 to-white/10 rounded-2xl animate-pulse" 
+          />
         ))}
       </div>
     );
@@ -128,10 +134,15 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
 
   if (photos.length === 0) {
     return (
-      <div className="text-center py-16 bg-white/5 rounded-2xl border border-white/10">
-        <ImageOff className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 text-lg">{emptyMessage}</p>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-20 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-3xl border border-white/10"
+      >
+        <ImageOff className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+        <h3 className="text-2xl font-bold text-white mb-2">No Photos Yet</h3>
+        <p className="text-gray-400 text-lg mb-6">{emptyMessage}</p>
+      </motion.div>
     );
   }
 
@@ -142,11 +153,11 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
           {photos.map((photo, index) => (
             <motion.div
               key={photo.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ delay: index * 0.05 }}
-              className="group relative aspect-square bg-white/5 rounded-xl overflow-hidden border border-white/10 hover:border-cyan-500/50 transition-all"
+              className="group relative aspect-square bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-300"
             >
               <LazyImage
                 src={photo.url}
@@ -156,20 +167,27 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
                 onClick={() => setSelectedPhoto(photo)}
               />
 
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <button
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+              {/* Hover actions */}
+              <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedPhoto(photo)}
-                  className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+                  className="p-3 bg-white/20 backdrop-blur-xl hover:bg-white/30 rounded-xl transition-colors"
                   title="View full size"
                 >
                   <ZoomIn className="w-5 h-5 text-white" />
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setConfirmDelete(photo.id)}
                   disabled={deletingId === photo.id}
-                  className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-3 bg-red-500/20 backdrop-blur-xl hover:bg-red-500/40 rounded-xl transition-colors disabled:opacity-50"
                   title="Delete photo"
                 >
                   {deletingId === photo.id ? (
@@ -177,13 +195,21 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
                   ) : (
                     <Trash2 className="w-5 h-5 text-red-400" />
                   )}
-                </button>
+                </motion.button>
+              </div>
+
+              {/* Photo info */}
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-white text-sm font-medium truncate">{photo.title}</p>
+                {photo.size && (
+                  <p className="text-gray-400 text-xs">{formatSize(photo.size)}</p>
+                )}
               </div>
 
               {/* Status badge */}
               {photo.status === 'processing' && (
-                <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500/80 rounded-lg text-xs text-white">
-                  Processing...
+                <div className="absolute top-2 right-2 px-3 py-1.5 bg-blue-500/80 backdrop-blur-xl rounded-lg text-xs text-white font-medium">
+                  Processing
                 </div>
               )}
             </motion.div>
@@ -192,76 +218,110 @@ export function PhotoGallery({ photos, onDelete, loading = false, emptyMessage =
       </div>
 
       {/* Delete confirmation modal */}
-      {confirmDelete && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-900 border border-white/10 rounded-2xl p-6 max-w-md w-full"
+      <AnimatePresence>
+        {confirmDelete && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setConfirmDelete(null)}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <AlertCircle className="w-6 h-6 text-red-400" />
-              <h3 className="text-xl font-bold text-white">Delete Photo?</h3>
-            </div>
-            <p className="text-gray-400 mb-6">
-              Are you sure you want to delete this photo? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmDelete(null)}
-                className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(confirmDelete)}
-                disabled={deletingId === confirmDelete}
-                className="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 rounded-xl text-white font-medium transition-colors disabled:opacity-50"
-              >
-                {deletingId === confirmDelete ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/10 rounded-3xl p-8 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-red-500/20 rounded-2xl">
+                  <AlertCircle className="w-8 h-8 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Delete Photo?</h3>
+                  <p className="text-gray-400 text-sm">This action cannot be undone</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmDelete(null)}
+                  className="flex-1 px-6 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(confirmDelete)}
+                  disabled={deletingId === confirmDelete}
+                  className="flex-1 px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-xl text-white font-medium transition-all disabled:opacity-50"
+                >
+                  {deletingId === confirmDelete ? 'Deleting...' : 'Delete Photo'}
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* Lightbox modal */}
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative max-w-5xl max-h-full"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedPhoto(null)}
           >
-            <img
-              src={selectedPhoto.url}
-              alt={selectedPhoto.altText || selectedPhoto.title}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg"
-            />
-            
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-              <p className="text-white font-medium">{selectedPhoto.title}</p>
-              {selectedPhoto.altText && (
-                <p className="text-gray-400 text-sm mt-1">{selectedPhoto.altText}</p>
-              )}
-              {selectedPhoto.size && (
-                <p className="text-gray-500 text-xs mt-1">{formatSize(selectedPhoto.size)}</p>
-              )}
-            </div>
-
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="relative max-w-6xl max-h-full w-full"
+              onClick={(e) => e.stopPropagation()}
             >
-              ✕
-            </button>
+              <img
+                src={selectedPhoto.url}
+                alt={selectedPhoto.altText || selectedPhoto.title}
+                className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
+              />
+
+              {/* Info overlay */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-8 rounded-b-2xl">
+                <h3 className="text-2xl font-bold text-white mb-2">{selectedPhoto.title}</h3>
+                <div className="flex flex-wrap gap-6 text-sm text-gray-300">
+                  {selectedPhoto.altText && (
+                    <p className="flex items-center gap-2">
+                      <FileImage className="w-4 h-4 text-cyan-400" />
+                      {selectedPhoto.altText}
+                    </p>
+                  )}
+                  {selectedPhoto.size && (
+                    <p>{formatSize(selectedPhoto.size)}</p>
+                  )}
+                  {selectedPhoto.width && selectedPhoto.height && (
+                    <p>{selectedPhoto.width} × {selectedPhoto.height}px</p>
+                  )}
+                  <p className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-purple-400" />
+                    {formatDate(selectedPhoto.createdAt)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Close button */}
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl rounded-full text-white transition-all"
+              >
+                <X className="w-6 h-6" />
+              </motion.button>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   );
 }

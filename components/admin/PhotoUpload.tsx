@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, Image, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, X, CheckCircle, AlertCircle, Loader2, FileImage, ImageIcon } from 'lucide-react';
 
 interface UploadProgress {
   id: string;
@@ -28,14 +28,8 @@ export function PhotoUpload({ onUploadComplete, maxFiles = 10, maxSizeMB = 10, a
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     const filesArray = Array.from(files);
     const validFiles = filesArray.filter(file => {
-      if (!acceptedTypes.includes(file.type)) {
-        console.warn(`Invalid file type: ${file.type}`);
-        return false;
-      }
-      if (file.size > maxSizeMB * 1024 * 1024) {
-        console.warn(`File too large: ${file.name}`);
-        return false;
-      }
+      if (!acceptedTypes.includes(file.type)) return false;
+      if (file.size > maxSizeMB * 1024 * 1024) return false;
       return true;
     }).slice(0, maxFiles - uploads.length);
 
@@ -48,7 +42,6 @@ export function PhotoUpload({ onUploadComplete, maxFiles = 10, maxSizeMB = 10, a
 
     setUploads(prev => [...prev, ...newUploads]);
 
-    // Upload files sequentially
     for (const upload of newUploads) {
       try {
         const formData = new FormData();
@@ -157,18 +150,20 @@ export function PhotoUpload({ onUploadComplete, maxFiles = 10, maxSizeMB = 10, a
   const uploadingCount = uploads.filter(u => u.status === 'uploading').length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Drop zone */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => fileInputRef.current?.click()}
         className={`
-          relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all
+          relative border-2 border-dashed rounded-3xl p-16 text-center cursor-pointer transition-all duration-300
           ${isDragging
-            ? 'border-cyan-500 bg-cyan-500/10'
-            : 'border-white/20 hover:border-white/40 hover:bg-white/5'
+            ? 'border-cyan-500 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 scale-105'
+            : 'border-white/20 hover:border-white/40 hover:bg-gradient-to-br hover:from-white/5 hover:to-white/10'
           }
         `}
       >
@@ -181,110 +176,154 @@ export function PhotoUpload({ onUploadComplete, maxFiles = 10, maxSizeMB = 10, a
           className="hidden"
         />
 
-        <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-cyan-400' : 'text-gray-500'}`} />
-        <p className="text-lg font-medium text-white mb-2">
-          {isDragging ? 'Drop photos here' : 'Drag & drop photos here'}
-        </p>
-        <p className="text-sm text-gray-400">
-          or click to browse • Max {maxFiles} files • Up to {maxSizeMB}MB each
-        </p>
-        <p className="text-xs text-gray-500 mt-2">
-          Accepted: {acceptedTypes.map(t => t.split('/')[1].toUpperCase()).join(', ')}
-        </p>
-      </div>
+        <motion.div
+          animate={isDragging ? { scale: 1.1 } : { scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300 }}
+        >
+          <div className="inline-flex p-4 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-3xl mb-6">
+            <Upload className={`w-12 h-12 ${isDragging ? 'text-cyan-400' : 'text-gray-400'}`} />
+          </div>
+          <p className="text-2xl font-bold text-white mb-3">
+            {isDragging ? 'Drop your photos here!' : 'Drag & drop photos'}
+          </p>
+          <p className="text-gray-400 mb-4">
+            or click to browse files
+          </p>
+          <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+            <span className="px-3 py-1 bg-white/5 rounded-full">Max {maxFiles} files</span>
+            <span className="px-3 py-1 bg-white/5 rounded-full">Up to {maxSizeMB}MB each</span>
+          </div>
+          <div className="flex items-center justify-center gap-2 mt-4 text-xs text-gray-600">
+            <ImageIcon className="w-4 h-4" />
+            <span>{acceptedTypes.map(t => t.split('/')[1].toUpperCase()).join(', ')}</span>
+          </div>
+        </motion.div>
+      </motion.div>
 
       {/* Upload progress */}
-      {uploads.length > 0 && (
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-white">
-              Upload Progress
-            </h3>
-            <div className="flex items-center gap-4 text-sm">
-              {uploadingCount > 0 && (
-                <span className="text-blue-400">{uploadingCount} uploading...</span>
-              )}
-              {successCount > 0 && (
-                <span className="text-green-400">{successCount} completed</span>
-              )}
-              {errorCount > 0 && (
-                <span className="text-red-400">{errorCount} failed</span>
-              )}
+      <AnimatePresence>
+        {uploads.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-3xl border border-white/10 p-6"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <FileImage className="w-6 h-6 text-cyan-400" />
+                <h3 className="text-xl font-bold text-white">Upload Progress</h3>
+              </div>
+              <div className="flex items-center gap-4 text-sm">
+                {uploadingCount > 0 && (
+                  <span className="flex items-center gap-2 px-3 py-1 bg-blue-500/20 rounded-full text-blue-400">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    {uploadingCount} uploading
+                  </span>
+                )}
+                {successCount > 0 && (
+                  <span className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full text-green-400">
+                    <CheckCircle className="w-3 h-3" />
+                    {successCount} done
+                  </span>
+                )}
+                {errorCount > 0 && (
+                  <span className="flex items-center gap-2 px-3 py-1 bg-red-500/20 rounded-full text-red-400">
+                    <AlertCircle className="w-3 h-3" />
+                    {errorCount} failed
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
 
-          <AnimatePresence>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {uploads.map(upload => (
-                <motion.div
-                  key={upload.id}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-3 p-3 bg-black/30 rounded-xl"
-                >
-                  {/* Status icon */}
-                  {upload.status === 'uploading' && (
-                    <Loader2 className="w-5 h-5 text-blue-400 animate-spin flex-shrink-0" />
-                  )}
-                  {upload.status === 'success' && (
-                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                  )}
-                  {upload.status === 'error' && (
-                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                  )}
-
-                  {/* File info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">
-                      {upload.file.name}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {(upload.file.size / 1024).toFixed(1)} KB
-                    </p>
-                  </div>
-
-                  {/* Progress bar */}
-                  {upload.status === 'uploading' && (
-                    <div className="w-32 h-2 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-blue-500"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${upload.progress}%` }}
-                      />
+            {/* Progress list */}
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+              <AnimatePresence>
+                {uploads.map(upload => (
+                  <motion.div
+                    key={upload.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="flex items-center gap-4 p-4 bg-black/30 rounded-2xl border border-white/5"
+                  >
+                    {/* Status icon */}
+                    <div className={`p-2 rounded-xl ${
+                      upload.status === 'uploading' ? 'bg-blue-500/20' :
+                      upload.status === 'success' ? 'bg-green-500/20' :
+                      'bg-red-500/20'
+                    }`}>
+                      {upload.status === 'uploading' && (
+                        <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
+                      )}
+                      {upload.status === 'success' && (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      )}
+                      {upload.status === 'error' && (
+                        <AlertCircle className="w-5 h-5 text-red-400" />
+                      )}
                     </div>
-                  )}
 
-                  {/* Error message */}
-                  {upload.status === 'error' && upload.error && (
-                    <p className="text-xs text-red-400">{upload.error}</p>
-                  )}
+                    {/* File info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white truncate">
+                        {upload.file.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {(upload.file.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
 
-                  {/* Remove button */}
-                  {(upload.status === 'success' || upload.status === 'error') && (
-                    <button
-                      onClick={() => removeUpload(upload.id)}
-                      className="p-1 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <X className="w-4 h-4 text-gray-400" />
-                    </button>
-                  )}
-                </motion.div>
-              ))}
+                    {/* Progress bar */}
+                    {upload.status === 'uploading' && (
+                      <div className="w-32 h-2 bg-white/10 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-cyan-500 to-purple-500"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${upload.progress}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </div>
+                    )}
+
+                    {/* Error */}
+                    {upload.status === 'error' && upload.error && (
+                      <p className="text-xs text-red-400">{upload.error}</p>
+                    )}
+
+                    {/* Remove button */}
+                    {(upload.status === 'success' || upload.status === 'error') && (
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => removeUpload(upload.id)}
+                        className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                      >
+                        <X className="w-4 h-4 text-gray-400" />
+                      </motion.button>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
-          </AnimatePresence>
 
-          {/* Clear button */}
-          {(successCount > 0 || errorCount > 0) && uploadingCount === 0 && (
-            <button
-              onClick={clearCompleted}
-              className="mt-4 w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-medium transition-colors"
-            >
-              Clear Completed
-            </button>
-          )}
-        </div>
-      )}
+            {/* Clear button */}
+            {(successCount > 0 || errorCount > 0) && uploadingCount === 0 && (
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={clearCompleted}
+                className="mt-6 w-full py-4 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 border border-white/10 rounded-2xl text-white font-medium transition-all"
+              >
+                Clear Completed ({successCount + errorCount})
+              </motion.button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
