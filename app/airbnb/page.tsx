@@ -1,8 +1,18 @@
-'use client';
+import { Metadata } from 'next';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Navigation } from '@/components/navigation';
 import { ArrowRight, Key, Clock, Shield, Sparkles, CheckCircle, Calendar, Star } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Airbnb Turnover Cleaning | LuminaClean — Smart Host Cleaning',
+  description: 'Automated Airbnb turnover cleaning between guests. Smart lock integration, 2-4 hour turnaround, photo documentation. From $120.',
+  openGraph: {
+    title: 'Airbnb Turnover Cleaning | LuminaClean',
+    description: 'Automated cleaning between guests with smart lock integration. From $120.',
+    type: 'website',
+  },
+};
 
 export default function AirbnbPage() {
   return (

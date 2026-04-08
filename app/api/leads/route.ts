@@ -100,10 +100,9 @@ export async function POST(request: Request) {
       type: data.type,
       contactName: data.contactName ?? data.participantName ?? data.strataName ?? 'Unknown',
       email: data.email,
-      phone: data.phone ?? undefined,
-      businessName: data.businessName ?? undefined,
-      message: data.message ?? undefined,
-      ...data,
+      phone: data.phone || undefined,
+      businessName: data.businessName || undefined,
+      message: data.message || undefined,
     }).catch(err => console.error('Failed to send email notification:', err));
 
     return NextResponse.json({

@@ -23,6 +23,7 @@ import {
 import { Reveal } from '../components/Reveal';
 import { ToggleSwitch } from '../components/ToggleSwitch';
 import { trpc } from '@/lib/trpc/client';
+import { LeadsList } from './LeadsList';
 
 /** SVG sparkline — pure SVG, no library needed */
 function Sparkline({ data, color = 'rgb(16, 185, 129)', height = 48 }: {
@@ -205,6 +206,7 @@ export default function AdminDashboard() {
   const f = freqMultipliers[freq];
   const tabs = [
     { key: 'overview', label: 'Overview', icon: BarChart3 },
+    { key: 'leads', label: 'Leads', icon: Users },
     { key: 'funnels', label: 'Funnel Builder', icon: Target },
     { key: 'ads', label: 'Ad Manager', icon: Zap },
     { key: 'seo', label: 'SEO Optimizer', icon: Eye },
@@ -477,6 +479,21 @@ export default function AdminDashboard() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Leads */}
+              {activeTab === 'leads' && (
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="font-headline font-bold text-2xl text-emerald-text">Lead Management</h3>
+                      <p className="text-emerald-text-muted mt-1">All inbound leads from quote forms, assessments, and site audits</p>
+                    </div>
+                  </div>
+                  <div className="glass rounded-2xl p-6">
+                    <LeadsList />
                   </div>
                 </div>
               )}

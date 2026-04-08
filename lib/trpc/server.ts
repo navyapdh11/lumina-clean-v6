@@ -156,6 +156,30 @@ export const appRouter = router({
       };
     }
   }),
+
+  getLeads: publicProcedure.query(async () => {
+    try {
+      const database = requireDb();
+      if (!database) return [];
+
+      const { leads: leadsTable } = require('@/db/schema');
+      const allLeads = await database.select().from(leadsTable).orderBy(leadsTable.createdAt).limit(100);
+      
+      return allLeads.map((lead: any) => ({
+        id: lead.id,
+        type: lead.type,
+        contactName: lead.contactName,
+        email: lead.email,
+        phone: lead.phone,
+        businessName: lead.businessName,
+        status: lead.status || 'new',
+        source: lead.source || 'website',
+        createdAt: lead.createdAt.toISOString(),
+      }));
+    } catch {
+      return [];
+    }
+  }),
 });
 
 export type AppRouter = typeof appRouter;
