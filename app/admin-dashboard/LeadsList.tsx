@@ -156,9 +156,9 @@ export function LeadsList() {
       <div className="flex items-center justify-between pt-4 border-t border-white/10 text-sm text-gray-400">
         <span>{leads.length} lead{leads.length !== 1 ? 's' : ''} total</span>
         <span>
-          {leads.filter((l: Lead) => l.status === 'new').length} new ·{' '}
-          {leads.filter((l: Lead) => l.status === 'contacted').length} contacted ·{' '}
-          {leads.filter((l: Lead) => l.status === 'qualified').length} qualified
+          {(leads as Lead[]).filter((l) => l.status === 'new').length} new ·{' '}
+          {(leads as Lead[]).filter((l) => l.status === 'contacted').length} contacted ·{' '}
+          {(leads as Lead[]).filter((l) => l.status === 'qualified').length} qualified
         </span>
       </div>
     </div>

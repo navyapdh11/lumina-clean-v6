@@ -1,5 +1,5 @@
 'use client';
-'use client';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Navigation } from '@/components/navigation';
@@ -15,7 +15,7 @@ export default function CommercialPage() {
           <p className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">Enterprise-grade office cleaning. From $0.65/sqm. Flexible schedules.</p>
           <div className="flex flex-col md:flex-row gap-6 justify-center mb-16">
             <Link href="/commercial/quote" className="bg-gradient-to-r from-green-500 to-emerald-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">📊 Get Quote <ArrowRight className="w-6 h-6" /></Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-LUMINA</a>
+            <a href="tel:1300737842" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-PERTHCLEAN</a>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[

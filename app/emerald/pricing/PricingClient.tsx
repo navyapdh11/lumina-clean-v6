@@ -299,7 +299,7 @@ export default function PricingClient() {
               Still have questions? Our team is here to help.
             </p>
             <a
-              href="tel:+61180012345"
+              href="tel:1300586462"
               className="btn-gradient text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center gap-2"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-white/50" />

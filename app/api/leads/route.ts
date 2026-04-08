@@ -4,6 +4,7 @@ import { leads } from '@/db/schema';
 import { nanoid } from 'nanoid';
 import { notifyNewLead } from '@/lib/email';
 import { z } from 'zod';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const leadSchema = z.object({
   type: z.string().min(1).max(50),
@@ -31,6 +32,20 @@ const leadSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // SECURITY: Rate limiting
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const rateLimitResult = await checkRateLimit({
+      identifier: `leads-${ip}`,
+      limit: 5,
+    });
+    
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     // SECURITY: CSRF origin check
     const origin = request.headers.get('origin');
     const host = request.headers.get('host');

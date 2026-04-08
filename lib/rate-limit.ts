@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -32,11 +30,11 @@ function getRatelimit() {
   return ratelimit;
 }
 
-export async function checkRateLimit(identifier: string): Promise<{ success: boolean; remaining: number; reset: number }> {
+export async function checkRateLimit(options: { identifier: string; limit?: number }): Promise<{ success: boolean; remaining: number; reset: number }> {
   const rl = getRatelimit();
   if (!rl) return { success: true, remaining: 999, reset: 0 };
 
-  const result = await rl.limit(identifier);
+  const result = await rl.limit(options.identifier);
   return {
     success: result.success,
     remaining: result.remaining,

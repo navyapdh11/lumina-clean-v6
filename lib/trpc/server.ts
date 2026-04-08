@@ -46,19 +46,19 @@ export const appRouter = router({
 
   createJob: protectedProcedure
     .input(z.object({
-      serviceType: z.string(),
-      postcode: z.string(),
-      address: z.string(),
-      scheduledAt: z.string(),
-      price: z.number(),
-      sqm: z.number().optional(),
-      bedrooms: z.number().optional(),
-      bathrooms: z.number().optional(),
-      phone: z.string().optional(),
-      email: z.string().optional(),
-      frequency: z.string().optional(),
+      serviceType: z.enum(['residential', 'commercial', 'ndis', 'strata', 'airbnb', 'real-estate']),
+      postcode: z.string().min(3).max(10),
+      address: z.string().min(5).max(500),
+      scheduledAt: z.string().min(10).max(50),
+      price: z.number().positive(),
+      sqm: z.number().positive().optional(),
+      bedrooms: z.number().int().min(0).max(20).optional(),
+      bathrooms: z.number().int().min(0).max(20).optional(),
+      phone: z.string().max(30).optional(),
+      email: z.string().email().optional(),
+      frequency: z.enum(['one-time', 'weekly', 'fortnightly', 'monthly']).optional(),
       notes: z.string().max(2000).optional(),
-      metadata: z.record(z.string(), z.string().max(500)).optional(),
+      metadata: z.record(z.string(), z.unknown()).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       const database = requireDb();
@@ -125,7 +125,7 @@ export const appRouter = router({
       return { success: true, count: leadsToInsert.length };
     }),
 
-  getDashboardMetrics: publicProcedure.query(async () => {
+  getDashboardMetrics: protectedProcedure.query(async () => {
     // Return real data from database when available, fallback to defaults
     try {
       const database = requireDb();
@@ -157,7 +157,7 @@ export const appRouter = router({
     }
   }),
 
-  getLeads: publicProcedure.query(async () => {
+  getLeads: protectedProcedure.query(async () => {
     try {
       const database = requireDb();
       if (!database) return [];
