@@ -31,7 +31,7 @@ class KafkaClient {
     this.initPromise = (async () => {
       try {
         const kafka = new Kafka({
-          clientId: 'lumina-clean',
+          clientId: 'perth-clean',
           brokers: process.env.KAFKA_BROKERS!.split(','),
           ssl: process.env.KAFKA_SSL === 'true',
         });

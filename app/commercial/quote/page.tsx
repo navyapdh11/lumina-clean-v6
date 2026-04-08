@@ -178,7 +178,7 @@ export default function CommercialQuotePage() {
 
             <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 flex items-start gap-3">
               <Info className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-              <p className="text-gray-300 text-sm">Our team will review your requirements and send a detailed quote within 24 hours. For urgent requests, call us at <span className="text-cyan-400 font-bold">1300-LUMINA</span>.</p>
+              <p className="text-gray-300 text-sm">Our team will review your requirements and send a detailed quote within 24 hours. For urgent requests, call us at <span className="text-cyan-400 font-bold">1300-PERTHCLEAN</span>.</p>
             </div>
 
             {submitStatus === 'success' && (
@@ -190,7 +190,7 @@ export default function CommercialQuotePage() {
             {submitStatus === 'error' && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
                 <p className="text-red-400 font-medium">❌ Submission failed</p>
-                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-LUMINA</p>
+                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-PERTHCLEAN</p>
               </div>
             )}
 

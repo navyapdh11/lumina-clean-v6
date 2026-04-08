@@ -18,7 +18,7 @@ export default function RealEstatePage() {
             <Link href="/book" className="bg-gradient-to-r from-emerald-500 to-cyan-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
               📅 Book Clean <ArrowRight className="w-6 h-6" />
             </Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-LUMINA</a>
+            <a href="tel:1300737842" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-PERTHCLEAN</a>
           </div>
           <div className="grid md:grid-cols-2 gap-12 mb-20">
             <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10">

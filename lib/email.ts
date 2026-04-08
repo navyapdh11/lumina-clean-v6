@@ -22,8 +22,8 @@ interface LeadNotificationData {
 }
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.EMAIL_FROM || 'notifications@lumina-clean.com.au';
-const TO_EMAIL = process.env.EMAIL_TO || 'team@lumina-clean.com.au';
+const FROM_EMAIL = process.env.EMAIL_FROM || 'notifications@perth-clean.com.au';
+const TO_EMAIL = process.env.EMAIL_TO || 'team@perth-clean.com.au';
 
 /**
  * Send an email notification
@@ -71,10 +71,22 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
 }
 
 /**
+ * Sanitize HTML to prevent XSS in email templates
+ */
+function sanitizeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Send notification when a new lead is submitted
  */
 export async function notifyNewLead(lead: LeadNotificationData) {
-  const subject = `New Lead: ${lead.type} - ${lead.contactName}`;
+  const subject = `New Lead: ${lead.type} - ${sanitizeHtml(lead.contactName)}`;
   
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -83,22 +95,22 @@ export async function notifyNewLead(lead: LeadNotificationData) {
       </h2>
       
       <table style="width: 100%; border-collapse: collapse;">
-        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Type:</td><td style="padding: 8px 0;">${lead.type}</td></tr>
-        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Name:</td><td style="padding: 8px 0;">${lead.contactName}</td></tr>
-        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Email:</td><td style="padding: 8px 0;"><a href="mailto:${lead.email}">${lead.email}</a></td></tr>
-        ${lead.phone ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Phone:</td><td style="padding: 8px 0;"><a href="tel:${lead.phone}">${lead.phone}</a></td></tr>` : ''}
-        ${lead.businessName ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Business:</td><td style="padding: 8px 0;">${lead.businessName}</td></tr>` : ''}
+        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Type:</td><td style="padding: 8px 0;">${sanitizeHtml(lead.type)}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Name:</td><td style="padding: 8px 0;">${sanitizeHtml(lead.contactName)}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Email:</td><td style="padding: 8px 0;"><a href="mailto:${sanitizeHtml(lead.email)}">${sanitizeHtml(lead.email)}</a></td></tr>
+        ${lead.phone ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Phone:</td><td style="padding: 8px 0;"><a href="tel:${sanitizeHtml(lead.phone)}">${sanitizeHtml(lead.phone)}</a></td></tr>` : ''}
+        ${lead.businessName ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #6b7280;">Business:</td><td style="padding: 8px 0;">${sanitizeHtml(lead.businessName)}</td></tr>` : ''}
       </table>
 
       ${lead.message ? `
         <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px;">
           <h3 style="margin-top: 0; color: #374151;">Message:</h3>
-          <p style="color: #4b5563;">${lead.message}</p>
+          <p style="color: #4b5563;">${sanitizeHtml(lead.message)}</p>
         </div>
       ` : ''}
 
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 12px;">
-        <p>This notification was sent from LuminaClean Lead Management System</p>
+        <p>This notification was sent from PerthClean Lead Management System</p>
         <p>Time: ${new Date().toLocaleString('en-AU')}</p>
       </div>
     </div>
@@ -115,16 +127,16 @@ export async function notifyNewLead(lead: LeadNotificationData) {
   // Send confirmation to customer
   await sendEmail({
     to: lead.email,
-    subject: `Thank you for your inquiry - LuminaClean`,
+    subject: `Thank you for your inquiry - PerthClean`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #06b6d4;">Thank you for contacting LuminaClean!</h2>
+        <h2 style="color: #06b6d4;">Thank you for contacting PerthClean!</h2>
         <p>Hi ${lead.contactName},</p>
         <p>We've received your ${lead.type.replace('-', ' ')} inquiry and our team will contact you within 24 hours.</p>
-        ${lead.phone ? `<p>If urgent, you can also reach us at <strong>1300-LUMINA</strong>.</p>` : ''}
-        <p style="margin-top: 30px;">Best regards,<br><strong>The LuminaClean Team</strong></p>
+        ${lead.phone ? `<p>If urgent, you can also reach us at <strong>1300-PERTHCLEAN</strong>.</p>` : ''}
+        <p style="margin-top: 30px;">Best regards,<br><strong>The PerthClean Team</strong></p>
         <p style="color: #9ca3af; font-size: 12px; margin-top: 40px;">
-          📞 1300-LUMINA | 🌐 lumina-clean.com.au
+          📞 1300-PERTHCLEAN | 🌐 perth-clean.com.au
         </p>
       </div>
     `,

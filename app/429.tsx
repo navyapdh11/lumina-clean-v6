@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '429 — Too Many Requests | LuminaClean',
+  title: '429 — Too Many Requests | PerthClean',
   description: 'You have exceeded the rate limit. Please wait a moment and try again.',
   robots: { index: false },
 };

@@ -42,7 +42,7 @@ export function Navigation() {
               href="/"
               className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
             >
-              LuminaClean
+              PerthClean
             </Link>
 
             <div className="hidden lg:flex items-center gap-2">
@@ -71,11 +71,11 @@ export function Navigation() {
 
             <div className="hidden lg:flex items-center gap-4">
               <a
-                href="tel:1300586462"
+                href="tel:1300737842"
                 className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform"
               >
                 <Phone className="w-4 h-4" />
-                1300-LUMINA
+                1300-PERTHCLEAN
               </a>
               <Link href="/sign-in" className="text-gray-300 hover:text-white transition-colors">
                 Sign In
@@ -115,8 +115,8 @@ export function Navigation() {
                   {section.icon} {section.name}
                 </Link>
               ))}
-              <a href="tel:1300586462" className="text-xl py-4 text-cyan-400 border-b border-white/10">
-                📞 1300-LUMINA
+              <a href="tel:1300737842" className="text-xl py-4 text-cyan-400 border-b border-white/10">
+                📞 1300-PERTHCLEAN
               </a>
             </div>
           </motion.div>

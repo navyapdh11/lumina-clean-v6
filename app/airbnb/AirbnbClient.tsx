@@ -19,7 +19,7 @@ export default function AirbnbPage() {
             <Link href="/book" className="bg-gradient-to-r from-orange-500 to-pink-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
               📅 Schedule Turnover <ArrowRight className="w-6 h-6" />
             </Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-LUMINA</a>
+            <a href="tel:1300737842" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-PERTHCLEAN</a>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[

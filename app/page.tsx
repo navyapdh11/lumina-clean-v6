@@ -62,7 +62,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-6xl md:text-8xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent mb-6"
           >
-            LuminaClean
+            PerthClean
           </motion.h1>
           <motion.p
             initial={{ y: 50, opacity: 0 }}
@@ -103,8 +103,8 @@ export default function HomePage() {
             <Link href="/admin-dashboard" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-10 py-5 rounded-3xl text-lg font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
               ⚙️ Admin Hub <ArrowRight className="w-5 h-5" />
             </Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-purple-500 to-pink-600 px-10 py-5 rounded-3xl text-lg font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
-              📞 1300-LUMINA <Phone className="w-5 h-5" />
+            <a href="tel:1300737842" className="bg-gradient-to-r from-purple-500 to-pink-600 px-10 py-5 rounded-3xl text-lg font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
+              📞 1300-PERTHCLEAN <Phone className="w-5 h-5" />
             </a>
           </motion.div>
         </div>
@@ -152,7 +152,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-5xl font-bold text-center bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent mb-16"
           >
-            Why Choose LuminaClean?
+            Why Choose PerthClean?
           </motion.h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -214,8 +214,8 @@ export default function HomePage() {
             <Link href="/book" className="bg-gradient-to-r from-green-500 to-emerald-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
               📅 Book Your Clean Now <ArrowRight className="w-6 h-6" />
             </Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-purple-500 to-pink-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
-              📞 Call 1300-LUMINA <Phone className="w-6 h-6" />
+            <a href="tel:1300737842" className="bg-gradient-to-r from-purple-500 to-pink-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">
+              📞 Call 1300-PERTHCLEAN <Phone className="w-6 h-6" />
             </a>
           </motion.div>
         </div>

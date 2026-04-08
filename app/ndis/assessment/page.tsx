@@ -217,7 +217,7 @@ export default function NDISAssessmentPage() {
             {submitStatus === 'error' && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center mb-4">
                 <p className="text-red-400 font-medium">❌ Submission failed</p>
-                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-LUMINA</p>
+                <p className="text-gray-400 text-sm mt-1">Please try again or call us at 1300-PERTHCLEAN</p>
               </div>
             )}
 
@@ -230,7 +230,7 @@ export default function NDISAssessmentPage() {
             </button>
 
             <div className="text-center text-gray-400 text-sm">
-              Or call us directly: <a href="tel:1300586462" className="text-purple-400 hover:text-purple-300 font-bold">1300-LUMINA</a>
+              Or call us directly: <a href="tel:1300737842" className="text-purple-400 hover:text-purple-300 font-bold">1300-PERTHCLEAN</a>
             </div>
           </motion.form>
 

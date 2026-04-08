@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   // SECURITY: Remove X-Powered-By header
   poweredByHeader: false,
   // PERFORMANCE: Set root for file tracing to avoid multiple lockfile warnings
-  outputFileTracingRoot: '/root/lumina-clean-v6',
+  outputFileTracingRoot: '/root/perth-clean-v6',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.clerk.com' },

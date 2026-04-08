@@ -6,7 +6,7 @@ import { z } from 'zod';
 const quoteSchema = z.object({ postcode: z.string(), service: z.string(), price: z.number(), slot: z.string(), confidence: z.number() });
 
 const ragPrompt = PromptTemplate.fromTemplate(`
-You are LuminaClean AI Dispatch (2026 Enterprise).
+You are PerthClean AI Dispatch (2026 Enterprise).
 Context: Australian cleaning services, all states.
 Laws: Fair Work Act 2009, WHS Act 2011, NDIS Practice Standards 2026.
 Pricing: residential $99-299, commercial $0.65/sqm, strata $450/location.

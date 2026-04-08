@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import CommercialClient from './CommercialClient';
 
 export const metadata: Metadata = {
-  title: 'Commercial Cleaning | LuminaClean',
+  title: 'Commercial Cleaning | PerthClean',
   description: 'Professional commercial cleaning services with AI-powered pricing.',
 };
 

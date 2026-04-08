@@ -14,7 +14,7 @@ export default function StrataPage() {
           <p className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">Specialized cleaning for strata schemes. Common areas, facilities, and grounds.</p>
           <div className="flex flex-col md:flex-row gap-6 justify-center mb-16">
             <Link href="/strata/quote" className="bg-gradient-to-r from-green-500 to-emerald-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform flex items-center justify-center gap-3">📊 Free Site Audit <ArrowRight className="w-6 h-6" /></Link>
-            <a href="tel:1300586462" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-LUMINA</a>
+            <a href="tel:1300737842" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-12 py-6 rounded-3xl text-xl font-bold hover:scale-105 transition-transform">📞 1300-PERTHCLEAN</a>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://lumina-clean-v6.vercel.app';
+  const baseUrl = 'https://perth-clean-v6.vercel.app';
 
   return [
     {

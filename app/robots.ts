@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin-dashboard', '/api/', '/sign-in', '/sign-up'],
     },
-    sitemap: 'https://lumina-clean-v6.vercel.app/sitemap.xml',
+    sitemap: 'https://perth-clean-v6.vercel.app/sitemap.xml',
   };
 }

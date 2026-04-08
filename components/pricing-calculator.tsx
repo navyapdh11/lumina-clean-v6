@@ -224,10 +224,10 @@ export function PricingCalculator() {
                     Book Now <ArrowRight className="w-4 h-4" />
                   </Link>
                   <a
-                    href="tel:1300586462"
+                    href="tel:1300737842"
                     className="bg-white/10 backdrop-blur-xl px-8 py-3 rounded-xl font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2"
                   >
-                    📞 1300-LUMINA
+                    📞 1300-PERTHCLEAN
                   </a>
                 </div>
               </div>

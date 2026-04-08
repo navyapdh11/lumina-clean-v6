@@ -18,21 +18,21 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
+  title: 'PerthClean – AI-Powered Premium Cleaning for Australia',
   description:
     'Australia\'s most advanced AI-powered cleaning services platform. Residential, commercial, NDIS, strata, Airbnb, and real estate cleaning with intelligent pricing and instant booking.',
   keywords: ['cleaning services', 'AI cleaning', 'commercial cleaning', 'NDIS', 'Airbnb cleaning', 'real estate cleaning', 'strata cleaning', 'Australia'],
   openGraph: {
-    title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
+    title: 'PerthClean – AI-Powered Premium Cleaning for Australia',
     description: 'AI-powered premium cleaning services across Australia with intelligent pricing and instant booking.',
-    url: 'https://lumina-clean.com.au',
-    siteName: 'LuminaClean',
+    url: 'https://perth-clean.com.au',
+    siteName: 'PerthClean',
     type: 'website',
     locale: 'en_AU',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LuminaClean – AI-Powered Premium Cleaning for Australia',
+    title: 'PerthClean – AI-Powered Premium Cleaning for Australia',
     description: 'AI-powered premium cleaning services across Australia.',
   },
   robots: { index: true, follow: true },

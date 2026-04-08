@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import StrataClient from './StrataClient';
 
 export const metadata: Metadata = {
-  title: 'Strata Cleaning | LuminaClean',
+  title: 'Strata Cleaning | PerthClean',
   description: 'Professional strata cleaning services with AI-powered pricing.',
 };
 
