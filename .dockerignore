@@ -1,0 +1,55 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+.next
+.out
+dist
+build
+
+# Vercel
+.vercel
+
+# Environment
+.env
+.env*.local
+.env*.development
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Database
+.cache
+drizzle
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.pem
+*.key
+!.gitkeep
